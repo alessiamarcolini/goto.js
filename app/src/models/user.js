@@ -1,5 +1,5 @@
 const pgp = require('pg-promise')();
-const config = require('@app/config');
+const config = require('@app/src/config');
 
 
 const cn = {
