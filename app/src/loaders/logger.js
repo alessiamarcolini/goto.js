@@ -1,6 +1,6 @@
 const winston = require('winston');
 
-const config = require('@app/src/config');
+const config = require('@app/config');
 
 // Read more about winston at https://github.com/winstonjs/winston
 

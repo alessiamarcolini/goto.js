@@ -1,25 +1,10 @@
 const pgp = require('pg-promise')();
-const config = require('@app/src/config');
-
-
-const cn = {
-	host: config.db_host,
-	port: config.db_port,
-	database: config.db_name,
-	user: config.db_user,
-	password : config.db_password    
-};
-
-console.log(cn)
-const db = pgp(cn);
-
-
-
+const {db} = require('@app/loaders/database')
 
 
 async function create(user) {
 	try {
-		await db.none('INSERT INTO users(name, password) VALUES($1, $2)', [user.name, user.password]);
+		await db.none('INSERT INTO users(name, pass) VALUES($1, $2)', [user.name, user.password]);
 	}catch(e) {
 		console.log(e)
 		throw Error(e)
@@ -33,7 +18,7 @@ async function create(user) {
 // eslint-disable-next-line no-unused-vars
 async function getAll() {
 	try {
-	    const users = await db.any('SELECT * FROM users', []);
+	    const users = await db.any('SELECT * FROM _user', []);
 	    return users;
 	} 
 	catch(e) {

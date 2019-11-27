@@ -1,4 +1,4 @@
-const User = require('@app/src/models/user');
+const User = require('@app/models/user');
 
 async function create(user) {
   if (!user) {
