@@ -10,8 +10,8 @@ const cn = {
 	password : config.db_password    
 };
 
+console.log(cn)
 const db = pgp(cn);
-
 
 
 
