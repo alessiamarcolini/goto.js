@@ -14,17 +14,38 @@ async function create(user) {
 
 
 
-
 // eslint-disable-next-line no-unused-vars
 async function getAll() {
+	return new Promise((resolve, reject) => {
+		db.any('SELECT * FROM _user;')
+			.then((result) => {
+				resolve(result);
+			})
+			.catch((error) => {
+				reject(error);
+			});
+	});
+	/**
 	try {
-	    const users = await db.any('SELECT * FROM _user', []);
+	    const users = await db.any('SELECT * FROM users', []);
 	    return users;
 	} 
 	catch(e) {
 		throw Error(e)
 	}
+	 */
 }
+
+async function ciao(){
+	await getAll()
+		.then((result) => {
+
+		})
+		.catch((error) => {
+			
+		})
+}
+
 
 module.exports = {
   create,

@@ -4,6 +4,8 @@ const UserService = require('@app/services/users');
 
 const route = Router();
 
+const user = require('../models/user');
+
 module.exports = async function(routes) {
 	routes.use('/users', route);
 
@@ -12,8 +14,15 @@ module.exports = async function(routes) {
 	// ritorna la lista di tutti gli utanti
 	// esempio: [{"user_id":1,"name":"luca","password":"123123"}]
 	route.get('/', async (req, res) => {
-		const users = await UserService.getAll();
-		res.status(200).json(users);
+		await user.getAll()
+		.then((result) => {
+			res.status(200).json(result);
+		})
+		.catch((error) => {
+			res.status(400).json(error);
+		})
+		//const users = await UserService.getAll();
+		
 	});
 
 
