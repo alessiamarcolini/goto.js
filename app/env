@@ -1,0 +1,12 @@
+# Port
+PORT=3000
+
+# Debug 
+LOG_LEVEL='debug'
+
+# Database configuration
+DB_HOST=manny.db.elephantsql.com
+DB_PORT=5432
+DB_NAME=aufmkpev
+DB_USER=aufmkpev
+DB_PASSWORD=GQ9wD1pAxnKuwA89SqkbTBWHebUl8ciq
