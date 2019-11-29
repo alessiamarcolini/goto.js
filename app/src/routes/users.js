@@ -21,7 +21,7 @@ module.exports = async function(routes) {
 	});
 
 	// GET Route that returns one specific User
-	route.get('/:id',async (req,res) => {
+	route.get('/:id', async (req,res) => {
 		await user.getUser(req.params.id)
 		.then((result) => {
 			res.status(200).json(result);
@@ -31,10 +31,44 @@ module.exports = async function(routes) {
 		})
 	});
 
+	// POST Route to modify weight of specific User
+	route.post('/:id/weight/:weight', async (req,res) => {
+		await UserService.changeUserWeight(req.params.id,req.params.weight)
+		.then((result) => {
+			res.status(200).json({
+				message:'ok'
+			});
+		})
+		.catch((error) => {
+			res.status(200).json({
+				errors: {
+					message : error.message
+				}
+			});
+		})
+	});
+
+	// POST Route to modify height of specific User
+	route.post('/:id/height/:height', async (req,res) => {
+		await UserService.changeUserHeight(req.params.id,req.params.height)
+		.then((result) => {
+			res.status(200).json({
+				message:'ok'
+			});
+		})
+		.catch((error) => {
+			res.status(200).json({
+				errors: {
+					message : error.message
+				}
+			});
+		})
+	});
+
 	// POST Route that inserts a new User
 	route.post('/', async (req, res) => {
 		try{
-			await UserService.create(req.body)
+			await UserService.createUser(req.body)
 			res.status(200).json({
 				message:'ok'
 			});
