@@ -18,11 +18,6 @@ async function create(user) {
   }
 }
 
-async function getAll() {
-  return User.getAll();
-}
-
 module.exports = {
-  create,
-  getAll
+  create
 };
