@@ -1,6 +1,7 @@
 const pgp = require('pg-promise')();
-const {db} = require('@app/loaders/database')
+const {db} = require('@app/loaders/database');
 
+const getUser = 'SELECT * FROM _user WHERE id_user = $1';
 
 async function create(user) {
 	try {
@@ -12,7 +13,16 @@ async function create(user) {
 }
 
 
-
+async function authUser(userId){
+	return new Promise(async (resolve, reject) => {
+		await db.any(getUser, [userId])
+			.then((result) => {
+				resolve(result);
+			}).catch((error) => {
+				reject(error);
+			});
+	});
+}
 
 
 // eslint-disable-next-line no-unused-vars
@@ -28,5 +38,6 @@ async function getAll() {
 
 module.exports = {
   create,
-  getAll
+  getAll,
+  authUser: authUser
 };
