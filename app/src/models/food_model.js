@@ -9,7 +9,7 @@ async function foodExists(foodId) {
             .then((result) => {
                 resolve(result);
             }).catch((error) => {
-                reject(result);
+                reject(error);
             });
     });
 }
