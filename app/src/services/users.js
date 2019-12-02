@@ -1,6 +1,9 @@
 const User = require('@app/models/user');
 
 async function createUser(user) {
+  //console.log(user.name);
+  //console.log(user.birth_date);
+
   if (!user) {
     throw Error('user parameter required.');
   }
@@ -44,12 +47,12 @@ async function changeUserHeight(id,height) {
 }
 
 async function changeUserGender(id,gender){
-  if(gender !== 'M' || gender !== 'F' || gender !== 'O'){
+  if(gender !== 'M' && gender !== 'F' && gender !== 'O'){
     throw Error('Gender must be one of three choices (Male,Female or Other).');
   }
 
   try{
-    const res = await User.changeUserGender(id,height);
+    const res = await User.changeUserGender(id,gender);
     return res;
   }catch(e){
     throw(e);
@@ -60,12 +63,12 @@ async function changeUserGender(id,gender){
 // 3 of which are important for the laf table (A,B,C)
 // The 4th choice, N, is just to say that the user is doing no activity at all
 async function changeUserActivityLevel(id,activity){
-  if(activity !== 'A' || activity !== 'B' || activity !== 'C' || activity !== 'N' ){
+  if(String(activity) !== 'A' && String(activity) !== 'B' && String(activity) !== 'C' && String(activity) !== 'N' ){
     throw Error('Activity must be one of four choices (A,B,C or N).');
   }
 
   try{
-    const res = await User.changeUserActivityLevel(id,height);
+    const res = await User.changeUserActivityLevel(id,activity);
     return res;
   }catch(e){
     throw(e);

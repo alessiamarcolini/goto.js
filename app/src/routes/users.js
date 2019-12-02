@@ -101,6 +101,8 @@ module.exports = async function(routes) {
 
 	// POST Route that inserts a new User
 	route.post('/', async (req, res) => {
+		console.log(req.body);
+		console.log(req.params);
 		try{
 			await UserService.createUser(req.body)
 			res.status(200).json({
