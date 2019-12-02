@@ -43,8 +43,39 @@ async function changeUserHeight(id,height) {
   }
 }
 
+async function changeUserGender(id,gender){
+  if(gender !== 'M' || gender !== 'F' || gender !== 'O'){
+    throw Error('Gender must be one of three choices (Male,Female or Other).');
+  }
+
+  try{
+    const res = await User.changeUserGender(id,height);
+    return res;
+  }catch(e){
+    throw(e);
+  }
+}
+
+// The function to change Activity Level can have 4 types
+// 3 of which are important for the laf table (A,B,C)
+// The 4th choice, N, is just to say that the user is doing no activity at all
+async function changeUserActivityLevel(id,activity){
+  if(activity !== 'A' || activity !== 'B' || activity !== 'C' || activity !== 'N' ){
+    throw Error('Activity must be one of four choices (A,B,C or N).');
+  }
+
+  try{
+    const res = await User.changeUserActivityLevel(id,height);
+    return res;
+  }catch(e){
+    throw(e);
+  }
+}
+
 module.exports = {
   createUser,
   changeUserWeight,
-  changeUserHeight
+  changeUserHeight,
+  changeUserGender,
+  changeUserActivityLevel
 };

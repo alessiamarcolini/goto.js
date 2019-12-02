@@ -61,11 +61,37 @@ async function changeUserHeight(id,height) {
 	});
 }
 
+async function changeUserGender(id,gender) {
+	return new Promise((resolve,reject) => {
+		db.any('UPDATE _user SET gender = $1 WHERE id_user = $2',[gender,id])
+			.then((result) => {
+				resolve(result);
+			})
+			.catch((error) => {
+				reject(error);
+			});
+	});
+}
+
+async function changeUserActivityLevel(id,level) {
+	return new Promise((resolve,reject) => {
+		db.any('UPDATE _user SET activity = $1 WHERE id_user = $2',[level,id])
+			.then((result) => {
+				resolve(result);
+			})
+			.catch((error) => {
+				reject(error);
+			});
+	});
+}
+
 
 module.exports = {
   createUser,
   getAll,
   getUser,
   changeUserWeight,
-  changeUserHeight
+  changeUserHeight,
+  changeUserGender,
+  changeUserActivityLevel
 };

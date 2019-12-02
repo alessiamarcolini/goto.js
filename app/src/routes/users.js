@@ -65,6 +65,40 @@ module.exports = async function(routes) {
 		})
 	});
 
+	// POST Route to modify gender of specific User
+	route.post('/:id/gender/:gender',async (req,res) =>{
+		await UserService.changeUserGender(req.params.id,req.params.gender)
+		.then((result) => {
+			res.status(200).json({
+				message:'ok'
+			});
+		})
+		.catch((error) => {
+			res.status(200).json({
+				errors: {
+					message : error.message
+				}
+			});
+		})
+	});
+
+	// POST Route to modify exercise activity level of specific User
+	route.post('/:id/activity/:activity',async (req,res) =>{
+		await UserService.changeUserActivityLevel(req.params.id,req.params.activity)
+		.then((result) => {
+			res.status(200).json({
+				message:'ok'
+			});
+		})
+		.catch((error) => {
+			res.status(200).json({
+				errors: {
+					message : error.message
+				}
+			});
+		})
+	});
+
 	// POST Route that inserts a new User
 	route.post('/', async (req, res) => {
 		try{
