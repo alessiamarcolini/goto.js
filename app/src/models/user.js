@@ -13,6 +13,10 @@ async function create(user) {
 }
 
 
+/**
+ * This function checks if a user exists.
+ * @param {User ID} userId 
+ */
 async function authUser(userId){
 	return new Promise(async (resolve, reject) => {
 		await db.any(getUser, [userId])

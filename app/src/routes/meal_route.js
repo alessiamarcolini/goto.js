@@ -3,9 +3,6 @@ const auth = require('./middlewares/auth');
 const service = require('../services/meal_service');
 const route = Router();
 
-//Router.use(auth.userAuth(req,res,next));
-//Router.use(auth.mealAuth(req,res,next));
-
 module.exports = async function(routes) {
 
     routes.use('/meal', route);
