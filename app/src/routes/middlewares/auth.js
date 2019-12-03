@@ -5,7 +5,7 @@ const Food = require('../../models/food_model');
 
 async function userAuth(req, res, next){
     let user = false;
-    await User.authUser(req.params.userId)
+    await User.authUser(req.body.userId)
         .then((result) => {
             user = result.length !== 0;
         }).catch((error) => {
@@ -19,7 +19,7 @@ async function userAuth(req, res, next){
 }
 
 async function food(req, res, next){
-    await Food.foodExists(req.params.mealId)
+    await Food.foodExists(req.body.foodId)
         .then((result) => {
             switch(result.length){
                 case 0:

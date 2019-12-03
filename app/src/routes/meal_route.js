@@ -10,11 +10,11 @@ module.exports = async function(routes) {
 
     routes.use('/meal', route);
 
-    route.use('/:userId/:mealId/', auth.userAuth, auth.food);
+    route.use('/', auth.userAuth);
 
-    route.get('/:userId/:mealId/:amount/:date/:hours', async (req, res)=>{
-        const amount = req.params.amount;
-        await meal.insertMeal(req.params.userId, req.foodId, amount, req.params.date.toString(), req.params.hours)
+    route.put('/', auth.food, async (req, res)=>{
+        const amount = req.body.amount;
+        await meal.insertMeal(req.body.userId, req.foodId, amount, req.body.date.toString(), req.body.hours)
             .then(async (result) => {
                 let date = result.param2;
                 let type = result.param3;
@@ -38,7 +38,7 @@ module.exports = async function(routes) {
                             status: "Insertion completed! ;)",
                             "date": date,
                             "type": type,
-                            food_added: req.params.mealId,
+                            food_added: req.body.foodId,
                             "amount": parseInt(amount), 
                             calories: result/amount,
                             total_calories_added: result
@@ -53,5 +53,9 @@ module.exports = async function(routes) {
                 res.status(400).send(error);
                 res.end();
             });
+    });
+
+    route.delete("/", async(req, res) => {
+        console.log("ok");
     });
 }
