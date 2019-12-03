@@ -36,7 +36,7 @@ module.exports = async function(routes) {
 		await UserService.changeUserWeight(req.params.id,req.params.weight)
 		.then((result) => {
 			res.status(200).json({
-				message:'ok'
+				message:'Weight modified succesfully.'
 			});
 		})
 		.catch((error) => {
@@ -53,7 +53,7 @@ module.exports = async function(routes) {
 		await UserService.changeUserHeight(req.params.id,req.params.height)
 		.then((result) => {
 			res.status(200).json({
-				message:'ok'
+				message:'Height modified succesfully.'
 			});
 		})
 		.catch((error) => {
@@ -70,7 +70,7 @@ module.exports = async function(routes) {
 		await UserService.changeUserGender(req.params.id,req.params.gender)
 		.then((result) => {
 			res.status(200).json({
-				message:'ok'
+				message:'Gender modified succesfully.'
 			});
 		})
 		.catch((error) => {
@@ -87,7 +87,7 @@ module.exports = async function(routes) {
 		await UserService.changeUserActivityLevel(req.params.id,req.params.activity)
 		.then((result) => {
 			res.status(200).json({
-				message:'ok'
+				message:'Activity Level modified succesfully.'
 			});
 		})
 		.catch((error) => {
@@ -104,7 +104,7 @@ module.exports = async function(routes) {
 		await user.changeUsername(req.params.id,req.params.name)
 		.then((result) => {
 			res.status(200).json({
-				message:'ok'
+				message:'Name modified succesfully.'
 			});
 		})
 		.catch((error) => {
@@ -121,7 +121,7 @@ module.exports = async function(routes) {
 		await user.changeUsersurname(req.params.id,req.params.surname)
 		.then((result) => {
 			res.status(200).json({
-				message:'ok'
+				message:'Surname modified succesfully.'
 			});
 		})
 		.catch((error) => {
@@ -135,18 +135,18 @@ module.exports = async function(routes) {
 
 	// POST Route that inserts a new User
 	route.put('/', async (req, res) => {
-		try{
-			await UserService.createUser(req.body)
+		await UserService.createUser(req.body)
+		.then((result) => {
 			res.status(200).json({
-				message:'ok'
+				message:'User Created succesfully.'
 			});
-		}catch (err){
-			res.status(err.status || 500);
-		    res.json({
-		      errors: {
-		        message: err.message
-		      }
-		    });
-		}
+		})
+		.catch((error) => {
+			res.status(200).json({
+				errors: {
+					message : error.message
+				}
+			});
+		})
 	});
 };
