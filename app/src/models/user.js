@@ -86,6 +86,31 @@ async function changeUserActivityLevel(id,level) {
 	});
 }
 
+async function changeUsername(id,name) {
+	return new Promise((resolve,reject) => {
+		db.any('UPDATE _user SET name = $1 WHERE id_user = $2',[name,id])
+			.then((result) => {
+				resolve(result);
+			})
+			.catch((error) => {
+				reject(error);
+			});
+	});
+}
+
+async function changeUsersurname(id,surname) {
+	console.log(surname);
+	return new Promise((resolve,reject) => {
+		db.any('UPDATE _user SET surname = $1 WHERE id_user = $2',[surname,id])
+			.then((result) => {
+				resolve(result);
+			})
+			.catch((error) => {
+				reject(error);
+			});
+	});
+}
+
 
 module.exports = {
   createUser,
@@ -94,5 +119,7 @@ module.exports = {
   changeUserWeight,
   changeUserHeight,
   changeUserGender,
-  changeUserActivityLevel
+  changeUserActivityLevel,
+  changeUsername,
+  changeUsersurname
 };

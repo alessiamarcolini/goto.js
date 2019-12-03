@@ -80,5 +80,5 @@ module.exports = {
   changeUserWeight,
   changeUserHeight,
   changeUserGender,
-  changeUserActivityLevel
+  changeUserActivityLevel,
 };

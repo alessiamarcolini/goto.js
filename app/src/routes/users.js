@@ -99,6 +99,40 @@ module.exports = async function(routes) {
 		})
 	});
 
+	// POST Route to modify exercise name level of specific User
+	route.post('/:id/name/:name',async (req,res) =>{
+		await user.changeUsername(req.params.id,req.params.name)
+		.then((result) => {
+			res.status(200).json({
+				message:'ok'
+			});
+		})
+		.catch((error) => {
+			res.status(200).json({
+				errors: {
+					message : error.message
+				}
+			});
+		})
+	});
+
+	// POST Route to modify exercise surname level of specific User
+	route.post('/:id/surname/:surname',async (req,res) =>{
+		await user.changeUsersurname(req.params.id,req.params.surname)
+		.then((result) => {
+			res.status(200).json({
+				message:'ok'
+			});
+		})
+		.catch((error) => {
+			res.status(200).json({
+				errors: {
+					message : error.message
+				}
+			});
+		})
+	});
+
 	// POST Route that inserts a new User
 	route.post('/', async (req, res) => {
 		console.log(req.body);
