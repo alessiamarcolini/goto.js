@@ -10,6 +10,8 @@ async function userAuth(req, res, next){
             user = result.length !== 0;
         }).catch((error) => {
             console.log(error);
+            res.status(500).send("Internal error");
+            res.end();
         });
     if(user){
         next();
@@ -18,23 +20,55 @@ async function userAuth(req, res, next){
     }    
 }
 
-async function food(req, res, next){
+async function foodAuth(req, res, next){
     await Food.foodExists(req.body.foodId)
         .then((result) => {
-            switch(result.length){
-                case 0:
-                    foodNotExist(res);
-                    break;
-                case 1:
-                    req.foodId = result[0].id_food;
-                    next();
-                    break;
-                default:
-                    ambiguous(res);
+            if(result){
+                req.foodId = req.body.foodId;
+                next();
+            }else{
+                foodNotExist(res);
             }
         }).catch((error) => {
             console.log(error);
+            res.status(500).send("Internal error");
+            res.end();
         });
+}
+
+async function modifyValidMeal(req, res, next){
+    await Meal.userAuth(req.body.userId, req.body.mealId)
+        .then((result) => {
+            if(result){
+                next();
+            }else{
+                permissionDenied(res);
+            }
+        }).catch((error) => {
+            console.log(error);
+            res.status(500).send("Internal error");
+            res.end();
+        });
+}
+
+async function foodExists(req, res, next){
+    if(req.body.foodId !== undefined){
+        await Food.foodExists(req.body.foodId)
+            .then((result) => {
+                if(result){
+                    req.foodId = req.body.foodId;
+                    next();
+                }else{
+                    foodNotExist(res);
+                }
+            }).catch((error) => {
+                console.log(error);
+                res.status(500).send("Internal error");
+                res.end();
+            });
+    }else{
+        next();
+    }
 }
 
 function permissionDenied(res){
@@ -47,12 +81,9 @@ function foodNotExist(res){
     res.end();
 }
 
-function ambiguous(res){
-    res.status(300).send("Ambiguous name");
-    res.end();
-}
-
 module.exports = {
     userAuth: userAuth,
-    food: food
+    foodAuth: foodAuth,
+    modifyValidMeal:modifyValidMeal,
+    foodExists:foodExists
 };

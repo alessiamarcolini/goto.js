@@ -3,20 +3,20 @@ const {db} = require('@app/loaders/database');
 
 const insertNewMeal = 'INSERT INTO user_meal ("id_user", "id_food", "quantity", "meal_date", "type_meal") VALUES ($1, $2, $3, $4, $5);';
 const foodCalories = 'SELECT calories_k FROM food_list WHERE id_food = $1';
+const deleteQuery = 'DELETE FROM user_meal WHERE id_meal = $1';
+const authUser = 'SELECT * FROM user_meal WHERE id_meal = $1 and id_user = $2';
+const modifyFoodIdQuery = 'UPDATE user_meal SET id_food = $1 WHERE id_meal = $2';
+const modifyQuantityQuery = 'UPDATE user_meal SET quantity = $1 WHERE id_meal = $2';
+const modifyDateQuery = 'UPDATE user_meal SET meal_date = $1 WHERE id_meal = $2';
+const modifyTypeQuery = 'UPDATE user_meal SET type_meal = $1 WHERE id_meal = $2';
 
-async function insertMeal(userId, foodId, amount, req_date, hours){
-    let date = mealDate(req_date);
-    let type = mealType(hours);
 
+
+async function insert(userId, foodId, amount, date, type){
     return new Promise(async (resolve, reject) => {
         await db.any(insertNewMeal, [userId, foodId, amount, date, type])
             .then((result) => {
-                resolve(
-                    {
-                        param1: result,
-                        param2: date,
-                        param3: type
-                    });
+                resolve(result);
             }).catch((error) => {
                 console.log(error);
                 reject(error);
@@ -36,35 +36,80 @@ async function getCalories(foodId, amount){
     });
 }
 
-function mealType(hour){
-    let type = undefined;
-    if(hour >= 11 && hour <= 14){
-        type = 'L';
-    }else if(hour >= 5 && hour <= 9){
-        type = 'B';
-    }else if(hour >= 18 && hour <= 21){
-        type = 'D';
-    }else{
-        type = 'S';
-    }  
-    return type;
+async function deleteMeal(mealId){
+    return new Promise(async (resolve, reject) => {
+        await db.any(deleteQuery, [mealId])
+            .then((result) => {
+                resolve(result);
+            }).catch((error) => {
+                console.log(error);
+                reject(error);
+            })
+    });
 }
 
-function mealDate(date){
-    if(!isValidDate(date)){
-        let date_ob = new Date();
-        return date_ob.getFullYear() + "-" + ("0" + (date_ob.getMonth() + 1)).slice(-2) + "-" + ("0" + date_ob.getDate()).slice(-2);
-    }else{
-        return date;
-    }
+async function userAuth(userId, mealId){
+    return new Promise(async (resolve, reject) => {
+        await db.any(authUser, [mealId, userId])
+            .then((result) => {
+                resolve(result.length === 1 ? true: false);
+            }).catch((error) => {
+                reject(error);
+            });
+    });
 }
 
-function isValidDate(d) {
-    var dateReg = /^\d{4}([./-])\d{2}\1\d{2}$/;
-    return d.match(dateReg) === null ? false: true;
+async function modifyFoodId(mealId, foodId){
+    return new Promise(async (resolve, reject) => {
+        await db.any(modifyFoodIdQuery, [foodId, mealId])
+            .then((result) => {
+                resolve(result);
+            }).catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+async function modifyQauntity(mealId, amount){
+    return new Promise(async (resolve, reject) => {
+        await db.any(modifyQuantityQuery, [amount, mealId])
+            .then((result) => {
+                resolve(result);
+            }).catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+async function modifyDate(mealId, date){
+    return new Promise(async (resolve, reject) => {
+        await db.any(modifyDateQuery, [date, mealId])
+            .then((result) => {
+                resolve(result);
+            }).catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+async function modifyType(mealId, type){
+    return new Promise(async (resolve, reject) => {
+        await db.any(modifyTypeQuery, [type, mealId])
+            .then((result) => {
+                resolve(result);
+            }).catch((error) => {
+                reject(error);
+            });
+    });
 }
 
 module.exports = {
-    insertMeal:insertMeal,
-    getCalories:getCalories
+    insert:insert,
+    getCalories:getCalories,
+    deleteMeal:deleteMeal,
+    userAuth:userAuth,
+    modifyFoodId:modifyFoodId,
+    modifyQauntity:modifyQauntity,
+    modifyDate:modifyDate,
+    modifyType:modifyType
 }
