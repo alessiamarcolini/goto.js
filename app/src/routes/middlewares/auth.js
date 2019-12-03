@@ -93,6 +93,15 @@ async function foodExists(req, res, next){
  * This function sends a permission denied message.
  * @param {Response} res 
  */
+function ambiguous(res){
+    res.status(300).send("Ambiguous name");
+    res.end();
+}
+
+/**
+ * This function sends a permission denied message.
+ * @param {Response} res 
+ */
 function permissionDenied(res){
     res.status(403.3).send("Access forbidden");
     res.end();
@@ -102,10 +111,12 @@ function permissionDenied(res){
  * This function sends a 'food does not exist' message.
  * @param {Response} res 
  */
+
 function foodNotExist(res){
     res.status(404).send("Food doesn't found");
     res.end();
 }
+
 
 module.exports = {
     userAuth: userAuth,

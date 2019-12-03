@@ -13,7 +13,6 @@ const CHANGE_NAME = 'UPDATE _user SET name = $1 WHERE id_user = $2';
 const CHANGE_SURNAME = 'UPDATE _user SET surname = $1 WHERE id_user = $2';
 const GET_USER = 'SELECT * FROM _user WHERE id_user = $1';
 
-
 /**
  * Models function to execute insert query into the DB.
  * Creates new User.
