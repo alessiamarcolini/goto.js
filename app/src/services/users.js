@@ -1,9 +1,6 @@
 const User = require('@app/models/user');
 
 async function createUser(user) {
-  //console.log(user.name);
-  //console.log(user.birth_date);
-
   if (!user) {
     throw Error('user parameter required.');
   }

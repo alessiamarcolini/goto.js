@@ -2,9 +2,8 @@ const pgp = require('pg-promise')();
 const {db} = require('@app/loaders/database')
 
 async function createUser(user) {
-	console.log(user.name);
 	return new Promise((resolve,reject) => {
-		db.none('INSERT INTO users(name, birth_date) VALUES($1, $2)', [user.name, user.birth_date])
+		db.none('INSERT INTO _user(name, birth_date) VALUES($1, $2)', [user.name, user.birth_date])
 			.then((result) => {
 				resolve(result);
 			})
