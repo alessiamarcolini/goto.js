@@ -4,12 +4,12 @@ const Stats = require('@app/models/stats');
 const year = new Date().getFullYear();
 
 /*
-  Men BMR   = 88.362 + (13.397 x weight in kg) + (4.799 x height in cm) - (5.677 x age in years)
-  Women BMR = 447.593 + (9.247 x weight in kg) + (3.098 x height in cm) - (4.330 x age in years)
-
-  ritorna un json con ==> calorie mangiate e da mangiare
+*  Men BMR   = 88.362 + (13.397 x weight in kg) + (4.799 x height in cm) - (5.677 x age in years)
+*  Women BMR = 447.593 + (9.247 x weight in kg) + (3.098 x height in cm) - (4.330 x age in years)
+*
+*  returns a json containig ==> calories-eaten-today, calories-to-eat
 */
-var todayCalories = async function(id){
+async function todayCalories(id){
   return new Promise(async function(resolve,reject){
 
     try{
@@ -41,7 +41,9 @@ var todayCalories = async function(id){
 }
 
 /*
-  ritorna un json con ==> quantità d'acqua bevuta e da bere
+*  @param {The user ID} id
+*
+*  returns a json containing ==> water drunk / to be drunk
 */
 async function todayWater(id){
   return new Promise(async function(resolve,reject){
@@ -68,7 +70,9 @@ async function todayWater(id){
 }
 
 /*
-  ritorna un json con ==> pesi recenti, previsione
+*  @param {The user ID} id
+*
+*  returns a JSON containig ==> the last 5 weights, your ideal weight
 */
 async function weightStats(id){
   return new Promise(async function(resolve,reject){
@@ -85,10 +89,10 @@ async function weightStats(id){
       }
 
       //probably right weight
-      let iWeight = (userInfo['height'] - 100 - userInfo['weight'])*0.9;
+      let goodWeight = (userInfo['height'] - 100 - userInfo['weight'])*0.9;
 
 
-      resolve({last_weights:weigths, idealWeight:iWeight});
+      resolve({lastWeights:weigths, idealWeight:goodWeight});
     }catch(e){
       reject(e);
     }
@@ -99,7 +103,9 @@ async function weightStats(id){
 
 
 /*
-  ritorna un json con ==> tutte le statistiche sopra
+*  @param {The user ID} id
+*  
+*  returns a JSON cointaining ==> all the stats above
 */
 async function getStats(id) {
   return new Promise(async function(resolve,reject){
@@ -114,7 +120,14 @@ async function getStats(id) {
       
 
 
-      resolve({calories:calories, water:water, weight:weight});
+      resolve({
+        caloriesToEat: calories['caloriesToEat'],
+        caloriesEaten: calories['caloriesEaten'],
+        lastWeights:weight['lastWeights'],
+        idealWeight:weight['idealWeight'],
+        waterToDrink:water['waterToDrink'],
+        waterDrunk:water['waterDrunk']
+      });
     }catch(e){
       reject(e);
     }
