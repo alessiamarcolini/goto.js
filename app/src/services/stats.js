@@ -9,66 +9,24 @@ const year = new Date().getFullYear();
 *
 *  returns a json containig ==> calories-eaten-today, calories-to-eat
 */
-async function todayCalories(id){
+async function respectedCalories(id, days){
   return new Promise(async function(resolve,reject){
 
-    try{
-      //prendo le info dal DB
-      let userMealsP = Stats.getTodayMeals(id);
-      let userInfo   = (await Stats.getInfo(id).then((res)=>{return res;}))[0];
-      let userMeals  = await userMealsP.then((res)=>{return res;}).catch((e)=>{throw(e);});
+    /stats/users/:id/idealWeight              ---> <real>
 
-      //calcolo il daily intake
-      let needed = 0;
-      if (userInfo['gender']=='F'){
-        needed = 447593 + 9247*userInfo['weight'] + 3098*userInfo['height'] - (year-new Date(userInfo['birth_date']).getFullYear())*4330;
-      }else{
-        needed = 88362 + 13197*userInfo['weight'] + 4799*userInfo['height'] - (year-new Date(userInfo['birth_date']).getFullYear())*5677;
-      }
+    /users/:id/stats/weeklyCalories           ---> <[se ha mangiato più o meno, giorno per giorno]>
 
-      //calcolo le galorie già assunte
-      let tot = 0;
-      for (let i=0; i<userMeals.length; i++){
-        food = userMeals[i];
-        tot += food['quantity']*food['calories_k'];
-      }
 
-      resolve({caloriesToEat:needed, caloriesEaten:tot});
-    }catch(e){
-      reject(e);
-    }
+    /stats/users/:id/weightTrending          ---> <[gli ultimi pesi]>
+    /stats/users/:id/weightTrending/:days    ---> <[i pesi degli ultimi X giorni]>
+
+
+
+    resolve({daysCounted:days, respected:respected});
+
   });
 }
 
-/*
-*  @param {The user ID} id
-*
-*  returns a json containing ==> water drunk / to be drunk
-*/
-async function todayWater(id){
-  return new Promise(async function(resolve,reject){
-
-    try{
-      //prendo le info dal DB
-      userWater = await Stats.getTodayWater(id)
-                             .then((res)=>{return res;});
-
-      //calcolo l'acqua da bere
-      let toDrink = 3000 - Math.abs((new Date().getMonth())-6)*100;
-
-
-      //calcolo l'acqua già bevuta
-      let tot = 0;
-      for (let i=0; i<userWater.length; i++){
-        tot += userWater[i]['quantity_ml'];
-      }
-
-      resolve({waterToDrink:toDrink, waterDrunk:tot});
-    }catch(e){
-      reject(e);
-    }
-  });
-}
 
 /*
 *  @param {The user ID} id
@@ -129,12 +87,10 @@ async function getStats(id) {
 
 
       resolve({
-        caloriesToEat: calories['caloriesToEat'],
-        caloriesEaten: calories['caloriesEaten'],
+        //caloriesToEat: calories['caloriesToEat'],
+        //caloriesEaten: calories['caloriesEaten'],
         lastWeights:weight['lastWeights'],
-        idealWeight:weight['idealWeight'],
-        waterToDrink:water['waterToDrink'],
-        waterDrunk:water['waterDrunk']
+        idealWeight:weight['idealWeight']
       });
     }catch(e){
       reject(e);
@@ -146,7 +102,7 @@ async function getStats(id) {
 
 module.exports = {
   getStats,
-  todayCalories,
+  respectedCalories,
   weightStats,
   todayWater
 };
