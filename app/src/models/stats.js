@@ -45,7 +45,22 @@ async function getWeights(user) {
 }
 
 async function getInfo(user) {
-	return(db.any(getInfoQuery, [user]));
+	return new Promise(async (resolve, reject)=>{
+		let res = await db.any(getInfoQuery, [user])
+					.then((res)=>{return res;})
+					.catch((e)=>{reject(e);console.log('should never appear');return false;});
+
+		if (res)
+			if (res.length===1)
+				resolve(res);
+			else
+				reject({message:'no user returned'});
+		else
+			reject()
+
+	});
+
+	;
 }
 
 async function getTodayMeals(user){

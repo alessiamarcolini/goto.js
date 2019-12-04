@@ -15,13 +15,7 @@ async function todayCalories(id){
     try{
       //prendo le info dal DB
       let userMealsP = Stats.getTodayMeals(id);
-      let userInfo   = await Stats.getInfo(id)
-                                  .then((res)=>{
-                                    if (res[0] && res[0]['gender'])
-                                      return res[0];
-                                    else
-                                      reject({message:'errore nel record della query'});
-                                  })
+      let userInfo   = (await Stats.getInfo(id).then((res)=>{return res;}))[0];
       let userMeals  = await userMealsP.then((res)=>{return res;}).catch((e)=>{throw(e);});
 
       //calcolo il daily intake

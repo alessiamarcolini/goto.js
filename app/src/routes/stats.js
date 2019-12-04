@@ -7,7 +7,7 @@ const route = Router();
 function errMessage(err){
 	return	{
 		    	errors: {
-		    		message: err.message || 'unknown'
+		    		message: err.message || 'unknown error'
 		    	}
 		 	}
 }
@@ -17,20 +17,20 @@ module.exports = async function(routes) {
 
 
 	//middleware to check if a user exists (implementato da moreno)
-	//routes.use('/:id', auth.userAuth);
+	//routes.use('/:userId', auth.userAuth);
 
 	/* returns every stats
 	* 	{
-    *    	caloriesToEat: calories['caloriesToEat'],
-    *    	caloriesEaten: calories['caloriesEaten'],
-    *    	lastWeights:weight['lastWeights'],
-    *    	idealWeight:weight['idealWeight'],
-    *    	waterToDrink:water['waterToDrink'],
-    *  	  	waterDrunk:water['waterDrunk']
+    *    	caloriesToEat: <int>,
+    *    	caloriesEaten: <int>,
+    *    	lastWeights:   <real>,
+    *    	idealWeight:   <real>,
+    *    	waterToDrink:  <int>,
+    *  	  	waterDrunk:    <int>
     * 	 }
 	*/
 	route.get('/:id/stats/', async (req, res) => {
-		StatService.getStats(req.params.id)
+		await StatService.getStats(req.params.id)
 			.then((stats) => {res.status(200).json(stats);})
 			.catch((err)=> {
 				res.status(400)
@@ -41,12 +41,12 @@ module.exports = async function(routes) {
 
 	/* returns stats on daily intake of calories
 	* 	{
-	*		caloriesToEat:needed,
-	*		caloriesEaten:tot
+	*		caloriesToEat: <int>,
+	*		caloriesEaten: <int>
 	* 	}
 	*/
 	route.get('/:id/stats/calories', async (req, res) => {
-		StatService.todayCalories(req.params.id)
+		await StatService.todayCalories(req.params.id)
 			.then((stats) => {res.status(200).json(stats);})
 			.catch((err)=> {
 				res.status(400)
@@ -58,12 +58,12 @@ module.exports = async function(routes) {
 
 	/* returns how much you have drunk today
 	*	{
-	*		waterToDrink:toDrink,
-	*		waterDrunk:tot
+	*		waterToDrink: <int>,
+	*		waterDrunk:   <int>
 	*	}
 	*/
 	route.get('/:id/stats/water', async (req, res) => {
-		StatService.todayWater(req.params.id)
+		await StatService.todayWater(req.params.id)
 			.then((stats) => {res.status(200).json(stats);})
 			.catch((err)=> {
 				res.status(400)
@@ -75,12 +75,12 @@ module.exports = async function(routes) {
 
 	/*returns stats on your weight
 	*	{
-	*		lastWeights:weigths, 
-	*		idealWeight:iWeight
+	*		lastWeights:  <real>, 
+	*		idealWeight:  <real>
 	*	}
 	*/
 	route.get('/:id/stats/weight', async (req, res) => {
-		StatService.weightStats(req.params.id)
+		await StatService.weightStats(req.params.id)
 			.then((stats) => {res.status(200).json(stats);})
 			.catch((err)=> {
 				res.status(400)
