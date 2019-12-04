@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const StatService = require('@app/services/stats');
-const auth = require('middleware/auth');
+//const auth = require('middleware/auth');
 
 const route = Router();
 

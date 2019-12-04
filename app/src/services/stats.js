@@ -15,8 +15,14 @@ async function todayCalories(id){
     try{
       //prendo le info dal DB
       let userMealsP = Stats.getTodayMeals(id);
-      let userInfo   = (await Stats.getInfo(id).then((res)=>{return res;})) [0];
-      let userMeals  = await userMealsP.then((res)=>{return res;});
+      let userInfo   = await Stats.getInfo(id)
+                                  .then((res)=>{
+                                    if (res[0] && res[0]['gender'])
+                                      return res[0];
+                                    else
+                                      reject({message:'errore nel record della query'});
+                                  })
+      let userMeals  = await userMealsP.then((res)=>{return res;}).catch((e)=>{throw(e);});
 
       //calcolo il daily intake
       let needed = 0;
@@ -50,7 +56,8 @@ async function todayWater(id){
 
     try{
       //prendo le info dal DB
-      userWater = await Stats.getTodayWater(id).then((res)=>{return res;});
+      userWater = await Stats.getTodayWater(id)
+                             .then((res)=>{return res;});
 
       //calcolo l'acqua da bere
       let toDrink = 3000 - Math.abs((new Date().getMonth())-6)*100;
@@ -79,8 +86,15 @@ async function weightStats(id){
     try{
       //prendo le info dal DB
       let userWeightsP = Stats.getWeights(id);
-      let userInfo   = (await Stats.getInfo(id).then((res)=>{return res;})) [0];
-      let userWeights  = await userWeightsP.then((res)=>{return res;});
+      let userHeight   = await Stats.getInfo(id)
+                                   .then((res)=>{
+                                      if(res[0] && res[0]['height']){
+                                        return res[0]['height'];
+                                      }else{
+                                        reject({message:'record non valido'});
+                                      }
+                                   });
+      let userWeights  = await userWeightsP.then((res)=>{return res;}).catch((e)=>{throw(e);});
 
       //last 5 weights
       let weigths = [];
@@ -89,7 +103,7 @@ async function weightStats(id){
       }
 
       //probably right weight
-      let goodWeight = (userInfo['height'] - 100 - userInfo['weight'])*0.9;
+      let goodWeight = (userHeight - 100);
 
 
       resolve({lastWeights:weigths, idealWeight:goodWeight});
