@@ -1,5 +1,5 @@
 const pgp = require('pg-promise')();
-const {db} = require('@app/loaders/database')
+const {db} = require('@app/loaders/database');
 
 const CREATE_USER  = 'INSERT INTO _user(name, birth_date) VALUES($1, $2) RETURNING id_user';
 const ALL_USER = 'SELECT * FROM _user;';
@@ -10,6 +10,7 @@ const CHANGE_GENDER = 'UPDATE _user SET gender = $1 WHERE id_user = $2';
 const CHANGE_ACTIVITY = 'UPDATE _user SET activity = $1 WHERE id_user = $2';
 const CHANGE_NAME = 'UPDATE _user SET name = $1 WHERE id_user = $2';
 const CHANGE_SURNAME = 'UPDATE _user SET surname = $1 WHERE id_user = $2';
+const GET_USER = 'SELECT * FROM _user WHERE id_user = $1';
 
 
 /**
@@ -81,6 +82,21 @@ async function changeUserWeight(id,weight) {
 				resolve(result);
 			})
 			.catch((error) => {
+				reject(error);
+			});
+	});
+}
+
+/**
+ * This function checks if a user exists.
+ * @param {User ID} userId 
+ */
+async function authUser(userId){
+	return new Promise(async (resolve, reject) => {
+		await db.any(GET_USER, [userId])
+			.then((result) => {
+				resolve(result);
+			}).catch((error) => {
 				reject(error);
 			});
 	});
@@ -187,5 +203,7 @@ module.exports = {
   changeUserGender,
   changeUserActivityLevel,
   changeUsername,
-  changeUsersurname
+  changeUsersurname,
+  getAll,
+  authUser: authUser
 };
