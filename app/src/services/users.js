@@ -1,6 +1,5 @@
 const User = require('@app/models/user');
 
-
 /**
  * This service provides user creation and validation of values.
  * Has to check that a name and a birth_date is provided in the request body.
@@ -26,100 +25,125 @@ async function createUser(user) {
   });
 }
 
-
 /**
- * This service provides a weight change for a specific user.
- * Has to check that weight provided is logically valid (positive)
- * @param {ID User} id 
- * @param {Weight} weight
+  * This service is used to modify specific user data.
+  * All values are validated by their accepted values.
+  * The service only inputs correctly setted values.
+  * @param {User ID} id_user 
+  * @param {Name} foodId 
+  * @param {Surname} amount 
+  * @param {Gender} gender 
+  * @param {Exercise Activity} activity 
+  * @param {Weight} weight 
+  * @param {Height} height 
 */
-async function changeUserWeight(id,weight) {
-  if(weight <= 0.0){
-    throw Error('Weight must be a positive number.');
-  }
-
-
-  return new Promise((resolve,reject) => {
-    User.changeUserWeight(id,weight)
-      .then((result) => {
-        resolve(result);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
+async function modifyUser(id_user, name, surname, gender, activity, weight, height){
+    return new Promise(async (resolve, reject) => {
+        let response = {};
+        if(name !== undefined){
+          await User.changeUsername(id_user,name)
+            .then(() => {
+              response.Name = "Modified";
+            })
+            .catch(() => {
+              reject(error);
+            });
+        }
+        if(surname !== undefined){
+          await User.changeUsersurname(id_user,surname)
+            .then(() => {
+              response.Surname = "Modified";
+            })
+            .catch(() => {
+              reject(error);
+            });
+        }
+        if(gender !== undefined){
+          await User.changeUserGender(id_user,gender)
+            .then(() => {
+              response.Gender = "Modified";
+            })
+            .catch(() => {
+              reject(error);
+            });
+        }
+        if(activity !== undefined){
+          if(isValidActivity(activity)){
+            await User.changeUserActivityLevel(id_user,activity)
+              .then(() => {
+                response.Activity = "Modified";
+              })
+              .catch(() => {
+                reject(error);
+              });
+          }
+        }
+        if(weight !== undefined){
+          if(isValidValue(weight)){
+            await User.changeUserWeight(id_user,weight)
+              .then(() => {
+                response.Weight = "Modified";
+              })
+              .catch(() => {
+                reject(error);
+              });
+          }
+        }
+        if(height !== undefined){
+          if(isValidValue(weight)){
+            await User.changeUserWeight(id_user,weight)
+              .then(() => {
+                response.Height = "Modified";
+              })
+              .catch(() => {
+                reject(error);
+              });
+          }
+        }
+        if(isEmptyObject(response)){
+            response.message = "Nothing to modify";
+        }
+        resolve(response);
+    });
 }
 
 /**
- * This service provides a height change for a specific user.
- * Has to check that height provided is logically valid (positive)
- * @param {ID User} id 
- * @param {Height} height
-*/
-async function changeUserHeight(id,height) {
-  if(height <= 0.0){
-    throw Error('Height must be a positive number.');
-  }
-
-  return new Promise((resolve,reject) => {
-    User.changeUserHeight(id,height)
-      .then((result) => {
-        resolve(result);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-}
-
-/**
- * This service provides a gender change for a specific user.
- * Has to check that gender provided is of three options (Male,Female,Other)
- * @param {ID User} id 
+ * Function to check that gender provided is of three options (Male,Female,Other)
  * @param {Gender} gender
 */
-async function changeUserGender(id,gender){
-  if(gender !== 'M' && gender !== 'F' && gender !== 'O'){
-    throw Error('Gender must be one of three choices (Male,Female or Other).');
+function isValidGender(gender){
+  let valid = false;
+  if(gender === 'M' || gender === 'F' || gender === 'O'){
+    valid = true;
   }
-
-  return new Promise((resolve,reject) => {
-    User.changeUserGender(id,gender)
-      .then((result) => {
-        resolve(result);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
+  return valid;
 }
 
 /**
- * This service provides an activity level change for a specific user.
- * Has to check that the level provided is of four options (A (light),B (medium),C (high), N (none))
- * @param {ID User} id 
+ * Function to check that the level provided is of four options (A (light),B (medium),C (high), N (none))
  * @param {Activity Level} activity
 */
-async function changeUserActivityLevel(id,activity){
-  if(String(activity) !== 'A' && String(activity) !== 'B' && String(activity) !== 'C' && String(activity) !== 'N' ){
-    throw Error('Activity must be one of four choices (A,B,C or N).');
+function isValidActivity(activity){
+  let valid = false;
+  if(activity === 'A' || activity === 'B' || activity === 'C' || activity === 'N'){
+    valid = true;
   }
+  return valid;
+}
 
-  return new Promise((resolve,reject) => {
-    User.changeUserActivityLevel(id,activity)
-      .then((result) => {
-        resolve(result);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
+/**
+  * Control function for the numerical value input (has to be > 0.0)
+  * @param {Value} value
+*/
+function isValidValue(value){
+  let valid = false;
+  if(value > 0.0){
+    valid = true;
+  }
+  return valid;
 }
 
 module.exports = {
   createUser,
-  changeUserWeight,
-  changeUserHeight,
-  changeUserGender,
-  changeUserActivityLevel,
+  modifyUser
 };

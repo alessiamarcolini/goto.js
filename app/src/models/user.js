@@ -1,7 +1,7 @@
 const pgp = require('pg-promise')();
 const {db} = require('@app/loaders/database');
 
-const CREATE_USER  = 'INSERT INTO _user(name, birth_date) VALUES($1, $2) RETURNING id_user';
+const CREATE_USER  = 'INSERT INTO _user(name, birth_date) VALUES($1, $2)';
 const ALL_USER = 'SELECT * FROM _user;';
 const SELECT_USER = 'SELECT * FROM _user WHERE id_user = $1';
 const CHANGE_HEIGHT = 'UPDATE _user SET weight = $1 WHERE id_user = $2';

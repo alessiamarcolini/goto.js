@@ -1,13 +1,12 @@
 const { Router } = require('express');
-
-const UserService = require('@app/services/users');
-
+const auth = require('./middlewares/auth');
+const service = require('@app/services/users');
 const route = Router();
-
 const user = require('../models/user');
 
 module.exports = async function(routes) {
 	routes.use('/users', route);
+	route.use('/users/', auth.userAuth);
 
 	/**
 		* Route to retrieve data of all users
@@ -41,141 +40,29 @@ module.exports = async function(routes) {
 	});
 
 	/**
-		* Route to update weight data of a specific user
+		* Route to update a specific user data
 		* Request format:
-		* /POST : users/:id/weight/:weight
-		* @param {User ID} id
-		* @param {Weight} weight
+		* /POST : users/
+    * JSON = {
+		*		"userID" 		: <id>,
+		*		"name" 			: <text>,
+		*		"surname" 	: <text>,
+		*		"gender" 		: <char>,
+		*		"activity"  : <char>,
+		*		"weight"   	: <number>,
+		*		"height"		: <number>
+		* }
 	*/
-	route.post('/:id/weight/:weight', async (req,res) => {
-		await UserService.changeUserWeight(req.params.id,req.params.weight)
+	route.post('/',auth.userAuth, async (req,res) => {
+		await user.modifyUser(req.body.userID,req.body.name,req.body.surname,req.body.gender,req.body.activty,req.body.weight,req.body.height)
 		.then((result) => {
-			res.status(200).json({
-				message:'Weight modified succesfully.'
-			});
-		})
+			res.status(200).send(result);
+			res.end();
+			})
 		.catch((error) => {
-			res.status(200).json({
-				errors: {
-					message : error.message
-				}
+			res.status(400).send(error);
+			res.end();
 			});
-		})
-	});
-
-	/**
-		* Route to update height data of a specific user
-		* Request format:
-		* /POST : users/:id/height/:height
-		* @param {User ID} id
-		* @param {Height} height
-	*/
-	route.post('/:id/height/:height', async (req,res) => {
-		await UserService.changeUserHeight(req.params.id,req.params.height)
-		.then((result) => {
-			res.status(200).json({
-				message:'Height modified succesfully.'
-			});
-		})
-		.catch((error) => {
-			res.status(200).json({
-				errors: {
-					message : error.message
-				}
-			});
-		})
-	});
-
-	/**
-		* Route to update gender data of a specific user
-		* Request format:
-		* /POST : users/:id/gender/:gender
-		* @param {User ID} id
-		* @param {Gender} gender
-	*/
-	route.post('/:id/gender/:gender',async (req,res) =>{
-		await UserService.changeUserGender(req.params.id,req.params.gender)
-		.then((result) => {
-			res.status(200).json({
-				message:'Gender modified succesfully.'
-			});
-		})
-		.catch((error) => {
-			res.status(200).json({
-				errors: {
-					message : error.message
-				}
-			});
-		})
-	});
-
-	/**
-		* Route to update activity level data of a specific user
-		* Request format:
-		* /POST : users/:id/activity/:activity
-		* @param {User ID} id
-		* @param {Activity Level} activity
-	*/
-	route.post('/:id/activity/:activity',async (req,res) =>{
-		await UserService.changeUserActivityLevel(req.params.id,req.params.activity)
-		.then((result) => {
-			res.status(200).json({
-				message:'Activity Level modified succesfully.'
-			});
-		})
-		.catch((error) => {
-			res.status(200).json({
-				errors: {
-					message : error.message
-				}
-			});
-		})
-	});
-
-	/**
-		* Route to update name data of a specific user
-		* Request format:
-		* /POST : users/:id/name/:name
-		* @param {User ID} id
-		* @param {Name} name
-	*/
-	route.post('/:id/name/:name',async (req,res) =>{
-		await user.changeUsername(req.params.id,req.params.name)
-		.then((result) => {
-			res.status(200).json({
-				message:'Name modified succesfully.'
-			});
-		})
-		.catch((error) => {
-			res.status(200).json({
-				errors: {
-					message : error.message
-				}
-			});
-		})
-	});
-
-	/**
-		* Route to update surname data of a specific user
-		* Request format:
-		* /POST : users/:id/surname/:surname
-		* @param {User ID} id
-		* @param {Surname} surname
-	*/
-	route.post('/:id/surname/:surname',async (req,res) =>{
-		await user.changeUsersurname(req.params.id,req.params.surname)
-		.then((result) => {
-			res.status(200).json({
-				message:'Surname modified succesfully.'
-			});
-		})
-		.catch((error) => {
-			res.status(200).json({
-				errors: {
-					message : error.message
-				}
-			});
-		})
 	});
 
 	/**
@@ -188,7 +75,7 @@ module.exports = async function(routes) {
 		* }
   */
 	route.put('/', async (req, res) => {
-		await UserService.createUser(req.body)
+		await service.createUser(req.body)
 		.then((result) => {
 			res.status(200).json({
 				message:'User Created succesfully.'
