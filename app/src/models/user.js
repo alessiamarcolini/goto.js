@@ -61,7 +61,12 @@ async function getUser(id) {
 	return new Promise((resolve,reject) => {
 		db.any(SELECT_USER,id)
 			.then((result) => {
-				resolve(result);
+				if (result.length != 1){
+			      reject({message:'get user by ID returned a number of row != 1'})
+			    } else if (!result[0]['height']){
+			      reject({message:'height not set for the user'})
+			    }
+			    resolve(result);
 			})
 			.catch((error) => {
 				reject(error);
