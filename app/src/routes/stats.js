@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const StatService = require('@app/services/stats');
-//const auth = require('middleware/auth');
+const auth = require('middleware/auth');
 
 const route = Router();
 
@@ -17,7 +17,7 @@ module.exports = async function(routes) {
 
 
 	//middleware to check if a user exists (implementato da moreno)
-	//routes.use('/:userId', auth.userAuth);
+	routes.use('/:userId', auth.userAuth);
 
 	/* returns every stats
 	* 	{
