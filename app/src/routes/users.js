@@ -9,7 +9,11 @@ const user = require('../models/user');
 module.exports = async function(routes) {
 	routes.use('/users', route);
 
-	// GET Route that returns all Users
+	/**
+		* Route to retrieve data of all users
+		* Request format:
+		* /PUT : users/
+	*/
 	route.get('/', async (req, res) => {
 		await user.getAll()
 		.then((result) => {
@@ -20,7 +24,12 @@ module.exports = async function(routes) {
 		})
 	});
 
-	// GET Route that returns one specific User
+		/**
+		* Route to retrieve data of a specific user
+		* Request format:
+		* /PUT : users/:id
+		* @param {User ID} id
+	*/
 	route.get('/:id', async (req,res) => {
 		await user.getUser(req.params.id)
 		.then((result) => {
@@ -31,7 +40,13 @@ module.exports = async function(routes) {
 		})
 	});
 
-	// POST Route to modify weight of specific User
+	/**
+		* Route to update weight data of a specific user
+		* Request format:
+		* /POST : users/:id/weight/:weight
+		* @param {User ID} id
+		* @param {Weight} weight
+	*/
 	route.post('/:id/weight/:weight', async (req,res) => {
 		await UserService.changeUserWeight(req.params.id,req.params.weight)
 		.then((result) => {
@@ -48,7 +63,13 @@ module.exports = async function(routes) {
 		})
 	});
 
-	// POST Route to modify height of specific User
+	/**
+		* Route to update height data of a specific user
+		* Request format:
+		* /POST : users/:id/height/:height
+		* @param {User ID} id
+		* @param {Height} height
+	*/
 	route.post('/:id/height/:height', async (req,res) => {
 		await UserService.changeUserHeight(req.params.id,req.params.height)
 		.then((result) => {
@@ -65,7 +86,13 @@ module.exports = async function(routes) {
 		})
 	});
 
-	// POST Route to modify gender of specific User
+	/**
+		* Route to update gender data of a specific user
+		* Request format:
+		* /POST : users/:id/gender/:gender
+		* @param {User ID} id
+		* @param {Gender} gender
+	*/
 	route.post('/:id/gender/:gender',async (req,res) =>{
 		await UserService.changeUserGender(req.params.id,req.params.gender)
 		.then((result) => {
@@ -82,7 +109,13 @@ module.exports = async function(routes) {
 		})
 	});
 
-	// POST Route to modify exercise activity level of specific User
+	/**
+		* Route to update activity level data of a specific user
+		* Request format:
+		* /POST : users/:id/activity/:activity
+		* @param {User ID} id
+		* @param {Activity Level} activity
+	*/
 	route.post('/:id/activity/:activity',async (req,res) =>{
 		await UserService.changeUserActivityLevel(req.params.id,req.params.activity)
 		.then((result) => {
@@ -99,7 +132,13 @@ module.exports = async function(routes) {
 		})
 	});
 
-	// POST Route to modify exercise name level of specific User
+	/**
+		* Route to update name data of a specific user
+		* Request format:
+		* /POST : users/:id/name/:name
+		* @param {User ID} id
+		* @param {Name} name
+	*/
 	route.post('/:id/name/:name',async (req,res) =>{
 		await user.changeUsername(req.params.id,req.params.name)
 		.then((result) => {
@@ -116,7 +155,13 @@ module.exports = async function(routes) {
 		})
 	});
 
-	// POST Route to modify exercise surname level of specific User
+	/**
+		* Route to update surname data of a specific user
+		* Request format:
+		* /POST : users/:id/surname/:surname
+		* @param {User ID} id
+		* @param {Surname} surname
+	*/
 	route.post('/:id/surname/:surname',async (req,res) =>{
 		await user.changeUsersurname(req.params.id,req.params.surname)
 		.then((result) => {
@@ -133,7 +178,15 @@ module.exports = async function(routes) {
 		})
 	});
 
-	// POST Route that inserts a new User
+	/**
+		* Route to create a new user in the system.
+		* Request format:
+		* /PUT : users/
+		* JSON = {
+		*		"name" : <name>,
+		*		"birth_date" : <date yyyy-MM-dd>
+		* }
+  */
 	route.put('/', async (req, res) => {
 		await UserService.createUser(req.body)
 		.then((result) => {

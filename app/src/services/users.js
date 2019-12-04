@@ -1,7 +1,11 @@
 const User = require('@app/models/user');
 
-// User creation service will only import Name and Birth_Date
-// Other values will not be inserted.
+
+/**
+ * This service provides user creation and validation of values.
+ * Has to check that a name and a birth_date is provided in the request body.
+ * @param {User} user 
+*/
 async function createUser(user) {
   if (!user) {
     throw Error('User parameter required.');
@@ -22,8 +26,13 @@ async function createUser(user) {
   });
 }
 
-// The function to change Weight must have weight > 0.0
-// Mostly because it's needed to do calculations, else it makes all calculations 0.0
+
+/**
+ * This service provides a weight change for a specific user.
+ * Has to check that weight provided is logically valid (positive)
+ * @param {ID User} id 
+ * @param {Weight} weight
+*/
 async function changeUserWeight(id,weight) {
   if(weight <= 0.0){
     throw Error('Weight must be a positive number.');
@@ -41,8 +50,12 @@ async function changeUserWeight(id,weight) {
   });
 }
 
-// The function to change Height must have height > 0.0
-// Mostly because it's needed to do calculations, can't be value / 0.0
+/**
+ * This service provides a height change for a specific user.
+ * Has to check that height provided is logically valid (positive)
+ * @param {ID User} id 
+ * @param {Height} height
+*/
 async function changeUserHeight(id,height) {
   if(height <= 0.0){
     throw Error('Height must be a positive number.');
@@ -59,8 +72,12 @@ async function changeUserHeight(id,height) {
   });
 }
 
-// The function to change Gender can have 3 types
-// 3 of which are important for the laf table (M,F,O)
+/**
+ * This service provides a gender change for a specific user.
+ * Has to check that gender provided is of three options (Male,Female,Other)
+ * @param {ID User} id 
+ * @param {Gender} gender
+*/
 async function changeUserGender(id,gender){
   if(gender !== 'M' && gender !== 'F' && gender !== 'O'){
     throw Error('Gender must be one of three choices (Male,Female or Other).');
@@ -77,9 +94,12 @@ async function changeUserGender(id,gender){
   });
 }
 
-// The function to change Activity Level can have 4 types
-// 3 of which are important for the laf table (A,B,C)
-// The 4th choice, N, is just to say that the user is doing no activity at all
+/**
+ * This service provides an activity level change for a specific user.
+ * Has to check that the level provided is of four options (A (light),B (medium),C (high), N (none))
+ * @param {ID User} id 
+ * @param {Activity Level} activity
+*/
 async function changeUserActivityLevel(id,activity){
   if(String(activity) !== 'A' && String(activity) !== 'B' && String(activity) !== 'C' && String(activity) !== 'N' ){
     throw Error('Activity must be one of four choices (A,B,C or N).');
