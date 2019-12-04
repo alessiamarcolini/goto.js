@@ -21,13 +21,8 @@ module.exports = async function(routes) {
 
 	/* returns every stats
 	* 	{
-    *    	caloriesToEat: <int>,
-    *    	caloriesEaten: <int>,
-    *    	lastWeights:   <real>,
-    *    	idealWeight:   <real>,
-    *    	waterToDrink:  <int>,
-    *  	  	waterDrunk:    <int>
-    * 	 }
+    *    	...
+    * 	}
 	*/
 	route.get('/:id/stats/', async (req, res) => {
 		await StatService.getStats(req.params.id)
@@ -39,14 +34,13 @@ module.exports = async function(routes) {
 			});
 	});
 
-	/* returns stats on daily intake of calories
+	/* returns your ideal weight IBM
 	* 	{
-	*		caloriesToEat: <int>,
-	*		caloriesEaten: <int>
+	*		idealWeight: <real>
 	* 	}
 	*/
-	route.get('/:id/stats/calories', async (req, res) => {
-		await StatService.respectedCalories(req.params.id)
+	route.get('/:id/stats/idealWeight', async (req, res) => {
+		await StatService.idealWeight(req.params.id)
 			.then((stats) => {res.status(200).json(stats);})
 			.catch((err)=> {
 				res.status(400)
@@ -59,14 +53,74 @@ module.exports = async function(routes) {
 
 
 
-	/*returns stats on your weight
+	/*returns a linear prediction of your weight in a month time
 	*	{
-	*		lastWeights:  <real>, 
-	*		idealWeight:  <real>
+	*		MonthlyWeightPrediction:  <real>, 
 	*	}
 	*/
-	route.get('/:id/stats/weight', async (req, res) => {
-		await StatService.weightStats(req.params.id)
+	route.get('/:id/stats/weightPrediction', async (req, res) => {
+		await StatService.weightPrediction(req.params.id)
+			.then((stats) => {res.status(200).json(stats);})
+			.catch((err)=> {
+				res.status(400)
+				   .json(errMessage(err))
+				   .end();
+			});
+	});
+
+	/*returns how much calories you_have_taken less you_had_to_take in the last week
+	*	{
+	*		caloriesTrending:  [couples(day)], 
+	*	}
+	*/
+	route.get('/:id/stats/caloriesTrending', async (req, res) => {
+		await StatService.caloriesTrending(req.params.id)
+			.then((stats) => {res.status(200).json(stats);})
+			.catch((err)=> {
+				res.status(400)
+				   .json(errMessage(err))
+				   .end();
+			});
+	});
+
+	/*returns your weights in the last week
+	*	{
+	*		weightTrending:  [couples(weight,day)  of the last 7 days], 
+	*	}
+	*/
+	route.get('/:id/stats/weightTrending', async (req, res) => {
+		await StatService.weightTrending(req.params.id)
+			.then((stats) => {res.status(200).json(stats);})
+			.catch((err)=> {
+				res.status(400)
+				   .json(errMessage(err))
+				   .end();
+			});
+	});
+
+
+	/*returns how much calories you_have_taken less you_had_to_take in the last DAYS
+	*	{
+	*		caloriesTrending:  [couples(day, if you have eaten more or less) of the last DAYS days], 
+	*	}
+	*/
+	route.get('/:id/stats/caloriesTrending/:days', async (req, res) => {
+		await StatService.caloriesTrending(req.params.id, req.params.days)
+			.then((stats) => {res.status(200).json(stats);})
+			.catch((err)=> {
+				res.status(400)
+				   .json(errMessage(err))
+				   .end();
+			});
+	});
+
+	/*returns your weights in the last DAYS
+	*	{
+	*		weightTrending:  [couples(weight,day)  of the last DAYS days], 
+	*	}
+	*/
+	route.get('/:id/stats/weightTrending/:days', async (req, res) => {
+		await StatService.weightTrending(req.params.id, req.params.days)
 			.then((stats) => {res.status(200).json(stats);})
 			.catch((err)=> {
 				res.status(400)
