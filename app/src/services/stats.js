@@ -36,7 +36,7 @@ async function idealWeight(id){
     //calculating the ideal weight
     idealWeight = 24 * userData['height']*userData['height']/10000;
     if (userData['gender']=='F'){
-      idealWeight += 24* (0.11 - userData['height']);
+      idealWeight += (0.11 - userData['height'])/5;
     }
 
 
@@ -169,9 +169,20 @@ async function weightTrending(id,days=7){
     oldWeights = await Stats.getWeights(id)
                             .then((res)=>{return res;})
                             .catch((err)=>{reject(err);});
-    today = new Date();
 
+    userData = (await User.getUser(id)
+                         .then((data)=>{return data;})
+                         .catch((err)=>{reject(err);}))[0];
+
+    today = new Date();
     trend = [];
+
+    if (!userData['weight']){
+      reject({message:'no weight specified for the user'});
+    }
+
+    
+    trend.concat({date:today, weight:userData['weight']});
 
     for (let i=0; i<oldWeights.length; i++){
       let w = oldWeights[i]['weight'];
