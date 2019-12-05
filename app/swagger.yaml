@@ -1,0 +1,244 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: "( goto.js ) Software Engineering Project"
+  description: >-
+    This is the documentation related to the project developed by the goto.js group.
+    The project idea is based on the management of calories and water intake daily.
+    Users can call service APIs to request various informations.
+  license:
+    name: MIT
+    url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
+# You should put here the URL to your Heroku instance    
+host: se2-movies.herokuapp.com
+basePath: /api
+schemes:
+- http
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  /users:
+    x-summary: Users collection
+    get:
+      description: >-
+        You may request all users using this action.
+      summary: List all users
+      consumes:
+      - application/json
+      produces:
+      - application/json      
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+
+    post:
+      description: >-
+        You may modify data of a specific user using this action. It takes a JSON
+        object containing the changed properties of a user.
+      summary: Modify specific user
+      consumes:
+      - application/json
+      produces:
+      - application/json       
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserModify'
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/UserModifyResponseSuccess'
+    put:
+      description: >-
+        You may register a new user using this action. It takes a JSON
+        object containing the obligatory properties of a user.
+      summary: Register new user
+      consumes:
+      - application/json
+      produces:
+      - application/json       
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/UserResponseSuccess'
+  
+  /users/{id}:
+    x-summary: User
+    get:
+      description: >-
+        You may request informations of a specific user using this action. 
+        It takes a URL parameter as the ID property of a user.
+      summary: List data of a specific user
+      consumes:
+      - application/json
+      produces:
+      - application/json  
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+
+
+definitions:
+  # This is just a simple model for that defines the Primary Key
+  # We could reuse this on the rest of our models.
+  PK:
+    type: object
+    properties:
+      id_user:
+        type: number
+        description: The identifier of the user.
+        
+  # This is a base Movie model that "packs" the basic properties
+  # to avoid repeating ourselves.
+  BaseUser:
+    title: User
+    type: object
+    properties:
+      name:
+        type: string
+        description: The name of the user.
+      birth_date:
+        type: string
+        description: The birth date of the user.
+    required:
+      - name
+      - birth_date
+      
+        
+  User:
+    allOf:
+      - $ref: '#/definitions/PK'  
+      - $ref: '#/definitions/BaseUser'    
+    type: object
+    properties:
+      surname:
+        type: string
+        description: The surname of the user.
+      height:
+        type: number
+        description: The height of the user.
+      weight:
+        type: number
+        description: The weight of the user.
+      gender:
+        type: string
+        description: The gender of the user.
+      activity:
+        type: string
+        description: The exercise activity level of the user.
+    example:
+        id_user: 7
+        name: Lucia
+        surname: Verdi
+        birth_date: 1988-02-13
+        gender: F
+        activity: B
+        weight: 65
+        height: 178
+       
+      
+  UserResponseSuccess:
+    type: object
+    properties:
+      message:
+        type: string
+        description: The server success message sent back.
+    example:
+      message: User Created succesfully.
+
+  UserResponseError:
+    type: object
+    properties:
+      message:
+        type: string
+        description: The server error message sent back.
+    example:
+      message: Error Message
+      
+  UserModify:
+    type: object
+    properties:
+      id_user:
+        type: number
+        description: The identifier of the user.
+      name:
+        type: string
+        description: The name of the user.
+      surname:
+        type: string
+        description: The surname of the user.
+      height:
+        type: number
+        description: The height of the user.
+      weight:
+        type: number
+        description: The weight of the user.
+      gender:
+        type: string
+        description: The gender of the user.
+      activity:
+        type: string
+        description: The exercise activity level of the user.
+    required:
+      - id_user
+      
+    example:
+        id_user: 7
+        name: Lucia
+        surname: Verdi
+        gender: F
+        activity: B
+        weight: 67
+        height: 179  
+
+  UserModifyResponseSuccess:
+    type: object
+    properties:
+      name:
+        type: string
+        description: The server success message sent back if name was changed.
+      surname:
+        type: string
+        description: The server success message sent back if surname was changed.
+      gender:
+        type: string
+        description: The server success message sent back if gender was changed.
+      activity:
+        type: string
+        description: The server success message sent back if activity level was changed.
+      height:
+        type: string
+        description: The server success message sent back if height was changed.
+      weight:
+        type: string
+        description: The server success message sent back if weight was changed.
+    example:
+      height: Height was modified.
+      weight: Weight was modified
+      
+      

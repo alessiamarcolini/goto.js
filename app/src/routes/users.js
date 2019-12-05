@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const auth = require('./middlewares/auth');
-const service = require('@app/services/users');
+const service = require('../services/users');
 const route = Router();
 const user = require('../models/user');
 
@@ -43,7 +43,7 @@ module.exports = async function(routes) {
 		* Request format:
 		* /POST : users/
     * JSON = {
-		*		"userId" 		: <id>,
+		*		"id_user" 		: <id>,
 		*		"name" 			: <text>,
 		*		"surname" 	: <text>,
 		*		"gender" 		: <char>,
@@ -53,7 +53,7 @@ module.exports = async function(routes) {
 		* }
 	*/
 	route.post('/',auth.userAuth, async (req,res) => {
-		await service.modifyUser(req.body.userId,req.body.name,req.body.surname,req.body.gender,req.body.activity,req.body.weight,req.body.height)
+		await service.modifyUser(req.body.id_user,req.body.name,req.body.surname,req.body.gender,req.body.activity,req.body.weight,req.body.height)
 		.then((result) => {
 			res.status(200).send(result);
 			res.end();
@@ -81,7 +81,7 @@ module.exports = async function(routes) {
 			});
 		})
 		.catch((error) => {
-			res.status(200).json({
+			res.status(400).json({
 				errors: {
 					message : error.message
 				}

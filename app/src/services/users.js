@@ -4,19 +4,22 @@ const service = require('./meal_service');
 /**
  * This service provides user creation and validation of values.
  * Has to check that a name and a birth_date is provided in the request body.
- * @param {User} user 
+ * @param {User} user
 */
 async function createUser(user) {
-  if (!user) {
-    throw Error('User parameter required.');
-  }
 
-  if (!user.name || !user.birth_date) {
-    throw Error('An user should have a name and birth date.');
+  if (!user.name && !user.birth_date) {
+    throw Error('User parameters required.');
+  }
+  if(!user.name || !user.birth_date) {
+    throw Error('A name and a birth date are required to create a new user.');
+  }
+  if(!service.isValidDate(user.birth_date.toString())){
+    throw Error('Birth date was not inserted correctly.');
   }
 
   return new Promise((resolve,reject) => {
-    User.createUser(user)
+    User.createUser(user.name,user.birth_date)
       .then((result) => {
         resolve(result);
       })
@@ -25,6 +28,8 @@ async function createUser(user) {
       });
   });
 }
+
+
 
 /**
   * This service is used to modify specific user data.
@@ -44,7 +49,7 @@ async function modifyUser(id_user, name, surname, gender, activity, weight, heig
         if(name !== undefined){
           await User.changeUsername(id_user,name)
             .then(() => {
-              response.Name = "Modified";
+              response.name = "Modified";
             })
             .catch((error) => {
               reject(error);
@@ -53,7 +58,7 @@ async function modifyUser(id_user, name, surname, gender, activity, weight, heig
         if(surname !== undefined){
           await User.changeUsersurname(id_user,surname)
             .then(() => {
-              response.Surname = "Modified";
+              response.surname = "Modified";
             })
             .catch((error) => {
               reject(error);
@@ -62,7 +67,7 @@ async function modifyUser(id_user, name, surname, gender, activity, weight, heig
         if(gender !== undefined){
           await User.changeUserGender(id_user,gender)
             .then(() => {
-              response.Gender = "Modified";
+              response.gender = "Modified";
             })
             .catch((error) => {
               reject(error);
@@ -72,7 +77,7 @@ async function modifyUser(id_user, name, surname, gender, activity, weight, heig
           if(isValidActivity(activity)){
             await User.changeUserActivityLevel(id_user,activity)
               .then(() => {
-                response.Activity = "Modified";
+                response.activity = "Modified";
               })
               .catch((error) => {
                 reject(error);
@@ -84,7 +89,7 @@ async function modifyUser(id_user, name, surname, gender, activity, weight, heig
             await User.changeUserWeight(id_user,weight)
               .then(() => {
                 console.log(weight);
-                response.Weight = "Modified";
+                response.weight = "Modified";
               })
               .catch((error) => {
                 reject(error);
@@ -95,7 +100,7 @@ async function modifyUser(id_user, name, surname, gender, activity, weight, heig
           if(isValidValue(height)){
             await User.changeUserHeight(id_user,height)
               .then(() => {
-                response.Height = "Modified";
+                response.height = "Modified";
               })
               .catch((error) => {
                 reject(error);
@@ -103,7 +108,7 @@ async function modifyUser(id_user, name, surname, gender, activity, weight, heig
           }
         }
         if(service.isEmptyObject(response)){
-            response.message = "Nothing to modify";
+            response.message = "Nothing modified";
         }
         resolve(response);
     });
