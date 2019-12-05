@@ -43,7 +43,7 @@ module.exports = async function(routes) {
 		* Request format:
 		* /POST : users/
     * JSON = {
-		*		"userID" 		: <id>,
+		*		"userId" 		: <id>,
 		*		"name" 			: <text>,
 		*		"surname" 	: <text>,
 		*		"gender" 		: <char>,
@@ -53,7 +53,7 @@ module.exports = async function(routes) {
 		* }
 	*/
 	route.post('/',auth.userAuth, async (req,res) => {
-		await service.modifyUser(req.body.userId,req.body.name,req.body.surname,req.body.gender,req.body.activty,req.body.weight,req.body.height)
+		await service.modifyUser(req.body.userId,req.body.name,req.body.surname,req.body.gender,req.body.activity,req.body.weight,req.body.height)
 		.then((result) => {
 			res.status(200).send(result);
 			res.end();

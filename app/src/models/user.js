@@ -1,11 +1,12 @@
 const pgp = require('pg-promise')();
 const {db} = require('@app/loaders/database');
 
-const CREATE_USER  = 'INSERT INTO _user(name, birth_date) VALUES($1, $2)';
+const CREATE_USER  = 'INSERT INTO _user(name, birth_date) VALUES($1, $2) returning id_user';
+const INSERT_USER = 'INSERT INTO user_history(change_date,id_user) VALUES(now(),$1)';
 const ALL_USER = 'SELECT * FROM _user;';
 const SELECT_USER = 'SELECT * FROM _user WHERE id_user = $1';
-const CHANGE_HEIGHT = 'UPDATE _user SET weight = $1 WHERE id_user = $2';
-const CHANGE_WEIGHT = 'UPDATE _user SET height = $1 WHERE id_user = $2';
+const CHANGE_HEIGHT = 'UPDATE _user SET height = $1 WHERE id_user = $2';
+const CHANGE_WEIGHT = 'UPDATE _user SET weight = $1 WHERE id_user = $2';
 const CHANGE_GENDER = 'UPDATE _user SET gender = $1 WHERE id_user = $2';
 const CHANGE_ACTIVITY = 'UPDATE _user SET activity = $1 WHERE id_user = $2';
 const CHANGE_NAME = 'UPDATE _user SET name = $1 WHERE id_user = $2';
@@ -21,10 +22,13 @@ const GET_USER = 'SELECT * FROM _user WHERE id_user = $1';
 */
 async function createUser(user) {
 	return new Promise((resolve,reject) => {
-		db.none(CREATE_USER, [user.name, user.birth_date])
+		db.oneOrNone(CREATE_USER, [user.name, user.birth_date])
 			.then((result) => {
-				resolve(result);
-			})
+				console.log(result);
+				return db.none(INSERT_USER,[result.id_user]);
+			}).then((result) => {
+							resolve(result);
+						})
 			.catch((error) => {
 				reject(error);
 			})
