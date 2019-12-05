@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const StatService = require('@app/services/stats');
-//const auth = require('middleware/auth');
+const auth = require('./middlewares/auth');
 
 const route = Router();
 
@@ -17,11 +17,13 @@ module.exports = async function(routes) {
 
 
 	//middleware to check if a user exists (implementato da moreno)
-	//routes.use('/:userId', auth.userAuth);
+	routes.use('/:userId', auth.userAuth);
 
 	/* returns every stats
 	* 	{
-    *    	...
+    *    	idealWeight: <real>,
+    *		monthlyWeightPrediction: <real>,
+    *		weightTrending: [(day, weight) in the last week]
     * 	}
 	*/
 	route.get('/:id/stats/', async (req, res) => {
@@ -40,7 +42,7 @@ module.exports = async function(routes) {
 	* 	}
 	*/
 	route.get('/:id/stats/idealWeight', async (req, res) => {
-		await StatService.idealWeight(req.params.id)
+		await StatService.getIdealWeight(req.params.id)
 			.then((stats) => {res.status(200).json(stats);})
 			.catch((err)=> {
 				res.status(400)
@@ -59,7 +61,7 @@ module.exports = async function(routes) {
 	*	}
 	*/
 	route.get('/:id/stats/weightPrediction', async (req, res) => {
-		await StatService.weightPrediction(req.params.id)
+		await StatService.getWeightPrediction(req.params.id)
 			.then((stats) => {res.status(200).json(stats);})
 			.catch((err)=> {
 				res.status(400)
@@ -68,20 +70,6 @@ module.exports = async function(routes) {
 			});
 	});
 
-	/*returns how much calories you_have_taken less you_had_to_take in the last week
-	*	{
-	*		caloriesTrending:  [couples(day)], 
-	*	}
-	*/
-	route.get('/:id/stats/caloriesTrending', async (req, res) => {
-		await StatService.caloriesTrending(req.params.id)
-			.then((stats) => {res.status(200).json(stats);})
-			.catch((err)=> {
-				res.status(400)
-				   .json(errMessage(err))
-				   .end();
-			});
-	});
 
 	/*returns your weights in the last week
 	*	{
@@ -89,7 +77,7 @@ module.exports = async function(routes) {
 	*	}
 	*/
 	route.get('/:id/stats/weightTrending', async (req, res) => {
-		await StatService.weightTrending(req.params.id)
+		await StatService.getWeightTrending(req.params.id)
 			.then((stats) => {res.status(200).json(stats);})
 			.catch((err)=> {
 				res.status(400)
@@ -99,20 +87,6 @@ module.exports = async function(routes) {
 	});
 
 
-	/*returns how much calories you_have_taken less you_had_to_take in the last DAYS
-	*	{
-	*		caloriesTrending:  [couples(day, if you have eaten more or less) of the last DAYS days], 
-	*	}
-	*/
-	route.get('/:id/stats/caloriesTrending/:days', async (req, res) => {
-		await StatService.caloriesTrending(req.params.id, req.params.days)
-			.then((stats) => {res.status(200).json(stats);})
-			.catch((err)=> {
-				res.status(400)
-				   .json(errMessage(err))
-				   .end();
-			});
-	});
 
 	/*returns your weights in the last DAYS
 	*	{
@@ -120,7 +94,7 @@ module.exports = async function(routes) {
 	*	}
 	*/
 	route.get('/:id/stats/weightTrending/:days', async (req, res) => {
-		await StatService.weightTrending(req.params.id, req.params.days)
+		await StatService.getWeightTrending(req.params.id, req.params.days)
 			.then((stats) => {res.status(200).json(stats);})
 			.catch((err)=> {
 				res.status(400)
