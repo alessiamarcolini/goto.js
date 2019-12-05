@@ -36,10 +36,10 @@ async function insert(userId, foodId, amount, req_date, hours){
                             .then((result) => {
                                 const RESPONS = {
                                     status: "Insertion completed! ;)",
-                                    "date": date,
-                                    "type": type,
+                                    "meal_date": date,
+                                    "type_meal": type,
                                     food_added: foodId,
-                                    "amount": parseInt(amount), 
+                                    "quantity": parseInt(amount), 
                                     calories: result/amount,
                                     total_calories_added: result
                                 };
@@ -105,7 +105,7 @@ async function modify(mealId, foodId, amount, date, hours){
         if(foodId !== undefined){
             await meal.modifyFoodId(mealId, foodId)
                 .then(() => {
-                    response.FoodId = 'Modified';
+                    response.id_food = 'Modified';
                 }).catch((error) => {
                     reject(error);
                 });
@@ -113,7 +113,7 @@ async function modify(mealId, foodId, amount, date, hours){
         if(amount !== undefined){
             await meal.modifyQauntity(mealId, amount)
                 .then(() => {
-                    response.Quantity =  'Modified';
+                    response.quantity =  'Modified';
                 }).catch((error) => {
                     reject(error);
                 });
@@ -122,7 +122,7 @@ async function modify(mealId, foodId, amount, date, hours){
             if(isValidDate(date.toString())){
                 await meal.modifyDate(mealId, date)
                     .then(() => {
-                        response.Date = 'Modified';
+                        response.meal_date = 'Modified';
                     }).catch((error) => {
                         reject(error);
                     });
@@ -133,12 +133,12 @@ async function modify(mealId, foodId, amount, date, hours){
             if(type !== "Error"){
                 await meal.modifyType(mealId, type)
                     .then(() => {
-                        response.Type = 'Modified';
+                        response.type_meal = 'Modified';
                     }).catch((error) => {
                         reject(error);
                     });
             }else{
-                response.Type = 'Not Modified, hour not valid';
+                response.type_meal = 'Not Modified, hour not valid';
             }            
         }
         if(isEmptyObject(response)){

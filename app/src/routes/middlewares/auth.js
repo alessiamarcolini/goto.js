@@ -10,7 +10,7 @@ const Food = require('../../models/food_model');
  * @param {Next function} next 
  */
 async function userAuth(req, res, next){
-    await User.authUser(req.body.userId)
+    await User.authUser(req.body.id_user)
         .then((result) => {
             result.length !== 0 ? next() : permissionDenied(res);
         }).catch((error) => {
@@ -27,10 +27,10 @@ async function userAuth(req, res, next){
  * @param {Next function} next 
  */
 async function foodAuth(req, res, next){
-    await Food.foodExists(req.body.foodId)
+    await Food.foodExists(req.body.id_food)
         .then((result) => {
             if(result){
-                req.foodId = req.body.foodId;
+                req.id_food = req.body.id_food;
                 next();
             }else{
                 foodNotExist(res);
@@ -49,7 +49,7 @@ async function foodAuth(req, res, next){
  * @param {Next function} next 
  */
 async function modifyValidMeal(req, res, next){
-    await Meal.userAuth(req.body.userId, req.body.mealId)
+    await Meal.userAuth(req.body.id_user, req.body.id_meal)
         .then((result) => {
             if(result){
                 next();
@@ -70,11 +70,11 @@ async function modifyValidMeal(req, res, next){
  * @param {Next function} next 
  */
 async function foodExists(req, res, next){
-    if(req.body.foodId !== undefined){
-        await Food.foodExists(req.body.foodId)
+    if(req.body.id_food !== undefined){
+        await Food.foodExists(req.body.id_food)
             .then((result) => {
                 if(result){
-                    req.foodId = req.body.foodId;
+                    req.id_food = req.body.id_food;
                     next();
                 }else{
                     foodNotExist(res);

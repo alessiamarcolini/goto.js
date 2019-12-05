@@ -14,16 +14,17 @@ module.exports = async function(routes) {
      * Request format:
      * /PUT : meal/
      * JSON = {
-     *      "userId" : <id>,
-     *      "foodId" : <id>,
-     *      "amount" : <number>,
-     *      "date" : <date yyyy-MM-dd>,
+     *      "id_user" : <id>,
+     *      "id_food" : <id>,
+     *      "quantity" : <number>,
+     *      "meal_date" : <date yyyy-MM-dd> or number,
      *      "hours" : <number>
      * }
+     * In case of a number date the system will insert the today date
      */
     route.put('/', auth.foodAuth, async (req, res)=>{
-        const amount = req.body.amount;
-        await service.insert(req.body.userId, req.foodId, amount, req.body.date.toString(), req.body.hours)
+        const quantity = req.body.quantity;
+        await service.insert(req.body.id_user, req.id_food, quantity, req.body.meal_date.toString(), req.body.hours)
             .then((result) => {
                 res.status(200).send(result);
                 res.end();                               
@@ -38,12 +39,12 @@ module.exports = async function(routes) {
      * Request format:
      * /DELETE : meal/
      * JSON = {
-     *      "userId" : <id>,
-     *      "mealId" : <id>
+     *      "id_user" : <id>,
+     *      "id_meal" : <id>
      * }
      */
     route.delete("/", auth.modifyValidMeal ,async(req, res) => {
-        await service.deleteMeal(req.body.mealId)
+        await service.deleteMeal(req.body.id_meal)
             .then(() => {
                 res.status(200).send("Delete complited");
                 res.end();
@@ -58,16 +59,17 @@ module.exports = async function(routes) {
      * Request format:
      * /POST : meal/
      * JSON = {
-     *      "userId" : <id>,
-	 *      "mealId" : <id>,
-	 *      "foodId" : <id>,
-     *      "amount" : <number>,
-     *      "date"   : <date>,
+     *      "id_user" : <id>,
+	 *      "id_meal" : <id>,
+	 *      "id_food" : <id>,
+     *      "quantity" : <number>,
+     *      "meal_date" : <date yyyy-MM-dd> or number,
      *      "hours"   : <hour>
      * }
+     * In case of a number date the system will insert the today date
      */
     route.post("/", auth.modifyValidMeal, auth.foodExists, async(req, res) => {
-        await service.modify(req.body.mealId, req.body.foodId, req.body.amount, req.body.date, req.body.hours)
+        await service.modify(req.body.id_meal, req.body.id_food, req.body.quantity, req.body.meal_date, req.body.hours)
             .then((result) => {
                 res.status(200).send(result);
                 res.end();
