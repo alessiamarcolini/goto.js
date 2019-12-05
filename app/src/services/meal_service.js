@@ -204,5 +204,6 @@ module.exports = {
     insert:insert,
     getCalories:getCalories,
     deleteMeal:deleteMeal,
-    modify:modify
+    modify:modify,
+    isEmptyObject:isEmptyObject
 }

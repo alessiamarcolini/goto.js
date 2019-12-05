@@ -6,7 +6,6 @@ const user = require('../models/user');
 
 module.exports = async function(routes) {
 	routes.use('/users', route);
-	route.use('/users/', auth.userAuth);
 
 	/**
 		* Route to retrieve data of all users
@@ -54,7 +53,7 @@ module.exports = async function(routes) {
 		* }
 	*/
 	route.post('/',auth.userAuth, async (req,res) => {
-		await user.modifyUser(req.body.userID,req.body.name,req.body.surname,req.body.gender,req.body.activty,req.body.weight,req.body.height)
+		await service.modifyUser(req.body.userId,req.body.name,req.body.surname,req.body.gender,req.body.activty,req.body.weight,req.body.height)
 		.then((result) => {
 			res.status(200).send(result);
 			res.end();

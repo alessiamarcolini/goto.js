@@ -1,4 +1,5 @@
-const User = require('@app/models/user');
+const User = require('../models/user');
+const service = require('./meal_service');
 
 /**
  * This service provides user creation and validation of values.
@@ -45,7 +46,7 @@ async function modifyUser(id_user, name, surname, gender, activity, weight, heig
             .then(() => {
               response.Name = "Modified";
             })
-            .catch(() => {
+            .catch((error) => {
               reject(error);
             });
         }
@@ -54,7 +55,7 @@ async function modifyUser(id_user, name, surname, gender, activity, weight, heig
             .then(() => {
               response.Surname = "Modified";
             })
-            .catch(() => {
+            .catch((error) => {
               reject(error);
             });
         }
@@ -63,7 +64,7 @@ async function modifyUser(id_user, name, surname, gender, activity, weight, heig
             .then(() => {
               response.Gender = "Modified";
             })
-            .catch(() => {
+            .catch((error) => {
               reject(error);
             });
         }
@@ -73,7 +74,7 @@ async function modifyUser(id_user, name, surname, gender, activity, weight, heig
               .then(() => {
                 response.Activity = "Modified";
               })
-              .catch(() => {
+              .catch((error) => {
                 reject(error);
               });
           }
@@ -84,23 +85,23 @@ async function modifyUser(id_user, name, surname, gender, activity, weight, heig
               .then(() => {
                 response.Weight = "Modified";
               })
-              .catch(() => {
+              .catch((error) => {
                 reject(error);
               });
           }
         }
         if(height !== undefined){
-          if(isValidValue(weight)){
-            await User.changeUserWeight(id_user,weight)
+          if(isValidValue(height)){
+            await User.changeUserHeight(id_user,height)
               .then(() => {
                 response.Height = "Modified";
               })
-              .catch(() => {
+              .catch((error) => {
                 reject(error);
               });
           }
         }
-        if(isEmptyObject(response)){
+        if(service.isEmptyObject(response)){
             response.message = "Nothing to modify";
         }
         resolve(response);
