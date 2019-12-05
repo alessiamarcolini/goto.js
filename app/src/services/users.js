@@ -88,7 +88,6 @@ async function modifyUser(id_user, name, surname, gender, activity, weight, heig
           if(isValidValue(weight)){
             await User.changeUserWeight(id_user,weight)
               .then(() => {
-                console.log(weight);
                 response.weight = "Modified";
               })
               .catch((error) => {

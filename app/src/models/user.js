@@ -166,7 +166,6 @@ async function changeUserActivityLevel(id,level) {
  * @param {Name} name
 */
 async function changeUsername(id,name) {
-	console.log(id,name);
 	return new Promise((resolve,reject) => {
 		db.any(CHANGE_NAME,[name,id])
 			.then((result) => {
@@ -185,7 +184,6 @@ async function changeUsername(id,name) {
  * @param {Surname} surname
 */
 async function changeUsersurname(id,surname) {
-	console.log(surname);
 	return new Promise((resolve,reject) => {
 		db.any(CHANGE_SURNAME,[surname,id])
 			.then((result) => {
