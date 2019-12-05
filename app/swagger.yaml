@@ -102,6 +102,28 @@ paths:
             items:
               $ref: '#/definitions/User'
 
+  /users/{id}/stats:
+    description: >-
+        You may request weight related statistic of a specific user using this action. 
+        It takes a URL parameter as the ID property of a user.
+      summary: List stats of a specific user
+      consumes:
+      - application/json
+      produces:
+      - application/json  
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: json
+            items:
+              $ref: 
+
 
 definitions:
   # This is just a simple model for that defines the Primary Key
