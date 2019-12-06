@@ -100,16 +100,18 @@ paths:
             type: array
             items:
               $ref: '#/definitions/User'
-
+              
   /users/{id}/stats:
-    description: >-
-        You may request weight related statistic of a specific user using this action. 
+    x-summary: Stats collection
+    get:
+      description: >-
+        You may request personal statistics of a specific user using this action. 
         It takes a URL parameter as the ID property of a user.
-      summary: List stats of a specific user
+      summary: List weight-related statistics of a specific user
       consumes:
       - application/json
       produces:
-      - application/json  
+      - application/json
       parameters:
         - in: path
           name: id
@@ -119,10 +121,107 @@ paths:
         200:
           description: Successful Response
           schema:
-            type: json
+            type: array
             items:
-              $ref: 
+              $ref: '#/definitions/UserStats'
+              
+  /users/{id}/stats/idealWeight:
+    x-summary: JSON containing a user ideal weight
+    get:
+      description: >-
+        You may request personal statistics about the ideal weight of a specific user using this action. 
+        It takes a URL parameter as the ID property of a user.
+      summary: Our ideal weight of a specific user
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserStatsIdeal'
 
+  /users/{id}/stats/weightPrediction:
+    x-summary: a JSON containinga user weight prediction (in a month time)
+    get:
+      description: >-
+        You may request personal statistics about the possible weight a user could have in 30 days using this action. 
+        It takes a URL parameter as the ID property of a user.
+      summary: Our prediction of the weight of a specific user in a month
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserStatsPrediction'
+
+  /users/{id}/stats/weightTrending:
+    x-summary: a JSON containinga user weight prediction (in a month time)
+    get:
+      description: >-
+        You may request a list of the weights of a user in the last week.
+      summary: a list containing objects representing the date and the value of the user's weight.
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserStatsTrending'
+              
+  /users/{id}/stats/weightTrending/{days}:
+    x-summary: a JSON containinga user weight prediction (in a month time)
+    get:
+      description: >-
+        You may request a list of the weights of a user in the last week.
+      summary: a list containing objects representing the date and the value of the user's weight.
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+        - in: path
+          name: days
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserStatsTrending'
 
 definitions:
   # This is just a simple model for that defines the Primary Key
@@ -269,5 +368,67 @@ definitions:
     example:
       height: Height was modified.
       weight: Weight was modified
+  
+  UserStats:
+    type: object
+    properties:
+      idealWeight: 
+        type: number
+        description: A real represinting your ideal weight in kg (calculated using your height and sex).
+      monthlyWeightPrediction:
+        type: number
+        description: A real representing your weight in a month time (calculated using linear regression on thw weights of your last 80 days).
+      weightTrending:
+        type: array
+        items: 
+          type: object
+          properties:
+            date:
+              type: string
+              description: The specific date of the weight registration.
+            weight:
+              type: number
+              description: The weight of that day.
+        description: An array containing object representing your weight in the last week.
+    example:
+      idealWeight: 73
+      monthlyWeightPrediction: 77
+      weightTrending: [{date: 2019-11-06, weight: 75 }, {date: 2019-12-08, weight: 76 }]
       
+      
+  UserStatsIdeal:
+    type: object
+    properties:
+      idealWeight: 
+        type: number
+        description: A real represinting your ideal weight in kg (calculated using your height and sex).
+    example:
+      idealWeight: 73
+
+  UserStatsPrediction:
+    type: object
+    properties:
+      idealWeight: 
+        type: number
+        description: A real represinting the prediction of a user weight in a month time (calculated using linear regression).
+    example:
+      monthlyWeightPrediction: 77
+      
+  UserStatsTrending:
+    type: object
+    properties:
+      weightTrending:
+        type: array
+        items: 
+          type: object
+          properties:
+            date:
+              type: string
+              description: The specific date of the weight registration.
+            weight:
+              type: number
+              description: The weight of that day.
+        description: An array containing object representing your weight in the last week.
+    example:
+      weightTrending: [{date: 2019-11-06, weight: 75 }, {date: 2019-12-08, weight: 76 }]
       

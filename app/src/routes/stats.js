@@ -17,13 +17,13 @@ module.exports = async function(routes) {
 
 
 	//middleware to check if a user exists (implementato da moreno)
-	routes.use('/:userId', auth.userAuth);
+	routes.use('/:id_user', auth.userAuth);
 
 	/* returns every stats
 	* 	{
     *    	idealWeight: <real>,
     *		monthlyWeightPrediction: <real>,
-    *		weightTrending: [(day, weight) in the last week]
+    *		weightTrending: [(date, weight) in the last week]
     * 	}
 	*/
 	route.get('/:id/stats/', async (req, res) => {
@@ -73,7 +73,7 @@ module.exports = async function(routes) {
 
 	/*returns your weights in the last week
 	*	{
-	*		weightTrending:  [couples(weight,day)  of the last 7 days], 
+	*		weightTrending:  [{date:<string>, weight:<number>}  of the last 7 days], 
 	*	}
 	*/
 	route.get('/:id/stats/weightTrending', async (req, res) => {
