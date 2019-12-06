@@ -1,11 +1,10 @@
 swagger: '2.0'
 info:
   version: '1.0'
-  title: "( goto.js ) Software Engineering Project"
+  title: "User Food API"
   description: >-
-    This is the documentation related to the project developed by the goto.js group.
-    The project idea is based on the management of calories and water intake daily.
-    Users can call service APIs to request various informations.
+    This is the documentation related to the API for managing user related queries for data, meals, water and calories management in the day.
+    Project developed by team goto.js
   license:
     name: MIT
     url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
@@ -174,7 +173,7 @@ definitions:
         type: string
         description: The exercise activity level of the user.
     example:
-        id_user: 7
+      - id_user: 7
         name: Lucia
         surname: Verdi
         birth_date: 1988-02-13
@@ -182,6 +181,14 @@ definitions:
         activity: B
         weight: 65
         height: 178
+      - id_user: 9
+        name: Marco
+        surname: null
+        birth_date: 1997-05-12
+        gender: M
+        activty: null
+        weight: 77
+        height: null
        
       
   UserResponseSuccess:
