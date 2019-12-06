@@ -1,5 +1,7 @@
 const User = require('@app/models/user');
+const Laf = require('@app/models/laf');
 
+const YEAR = new Date().getFullYear(); // current year
 
 /**
  * This service provides user creation and validation of values.
@@ -116,24 +118,75 @@ async function changeUserActivityLevel(id,activity){
   });
 }
 
-async function getDailyCalories(user){
-  if (!user) {
-    throw Error('form data required.');
-  }
-  console.log(user)
+/**
+ * This service provide the daily calories amount that a user should take.
+ * @param {ID User} id_user 
+ */
 
-  if (!user.id_user) {
-    throw Error('user_id required.');
+async function getDailyCalories(id_user){
+
+  if (!id_user) {
+    throw Error('id_user required.');
   }
 
-  return new Promise((resolve, reject) => {
-    User.getDailyCalories(user.id_user)
-      .then((result) => {
-        resolve(result);
-      })
-      .catch((error) => {
-        reject(error);
-      });
+  return new Promise(async (resolve, reject) => {
+
+    try{
+      let userInfo = await User.getUser(id_user)
+                                .then((res) => {
+                                  if (res[0]){
+                                    if (res[0]['weight'])
+                                      return res[0];
+                                    else
+                                      reject({message: 'Error: weight not set.'});
+                                  }
+                                  else 
+                                    reject({message: 'Error: user not found.'});
+                                });
+      console.log(userInfo);
+      let BMR = userInfo['weight'] * 38; // Basal Metabolic Rate
+
+      let gender = 'O'
+      if (userInfo['gender'] != undefined)
+        gender = userInfo['gender'];
+      
+      let age = YEAR - new Date(userInfo['birth_date']).getFullYear();
+      
+      let ageType = '';
+      if (age <= 59)
+        ageType = 'A';
+      else if (age <= 74)
+        ageType = 'B';
+      else
+        ageType = 'C';
+      
+      let activityLevel = 'N'
+      if (userInfo['activity'] != undefined)
+        activityLevel = userInfo['activity'];
+      console.log(activityLevel);
+      let laf_factor = await Laf.getLafFactor(gender, ageType, activityLevel)
+                                .then((res) => {
+                                  if (res)
+                                    return res;
+                                  else 
+                                    reject({message: 'Error: Laf factor not found.'});
+                                })
+                                .catch((error) => {
+                                  //reject({message: 'Error with DB query.'});
+                                  reject(error);
+                                })
+                                ;
+
+      console.log(laf_factor);
+      let dailyCalories = BMR * laf_factor;
+      console.log(dailyCalories);
+      resolve({'id_user': userInfo.id_user, 'name': userInfo.name, 'height': userInfo.height, 'weight': userInfo.weight, 'dailyCalories' : dailyCalories});
+                                              
+    }
+    catch(e){
+      reject(e);
+    }
+
   });
 }
 
@@ -143,4 +196,5 @@ module.exports = {
   changeUserHeight,
   changeUserGender,
   changeUserActivityLevel,
+  getDailyCalories
 };
