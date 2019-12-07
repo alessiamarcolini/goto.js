@@ -66,7 +66,7 @@ module.exports = async function(routes) {
      *      "meal_date" : <date yyyy-MM-dd> or number,
      *      "hours"   : <hour>
      * }
-     * In case of a number date the system will insert the today date
+     * In case of an invalid date the system will insert the today date
      */
     route.post("/", auth.modifyValidMeal, auth.foodExists, async(req, res) => {
         await service.modify(req.body.id_meal, req.body.id_food, req.body.quantity, req.body.meal_date, req.body.hours)
