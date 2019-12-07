@@ -17,10 +17,10 @@ module.exports = async function(routes) {
      *      "id_user" : <id>,
      *      "id_food" : <id>,
      *      "quantity" : <number>,
-     *      "meal_date" : <date yyyy-MM-dd> or number,
+     *      "meal_date" : <date yyyy-MM-dd>,
      *      "hours" : <number>
      * }
-     * In case of a number date the system will insert the today date
+     * In case of an invalid date the system will insert today's date
      */
     route.put('/', auth.foodAuth, async (req, res)=>{
         const quantity = req.body.quantity;
