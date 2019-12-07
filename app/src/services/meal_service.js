@@ -130,7 +130,9 @@ async function modify(mealId, foodId, amount, date, hours){
                     }).catch((error) => {
                         reject(error);
                     });
-            }            
+            }else{
+                response.meal_date =  'Not modified, date not valid';
+            }       
         }
         if(hours !== undefined){
             let type = mealType(hours);
