@@ -63,7 +63,7 @@ module.exports = async function(routes) {
 	 *      "id_meal" : <id>,
 	 *      "id_food" : <id>,
      *      "quantity" : <number>,
-     *      "meal_date" : <date yyyy-MM-dd> or number,
+     *      "meal_date" : <date yyyy-MM-dd>,
      *      "hours"   : <hour>
      * }
      * In case of an invalid date the system will insert the today date
