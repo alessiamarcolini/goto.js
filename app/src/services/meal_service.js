@@ -111,12 +111,16 @@ async function modify(mealId, foodId, amount, date, hours){
                 });
         }
         if(amount !== undefined){
-            await meal.modifyQauntity(mealId, amount)
-                .then(() => {
-                    response.quantity =  'Modified';
-                }).catch((error) => {
-                    reject(error);
-                });
+            if(amount > 0){
+                await meal.modifyQauntity(mealId, amount)
+                    .then(() => {
+                        response.quantity =  'Modified';
+                    }).catch((error) => {
+                        reject(error);
+                    });
+            }else{
+                response.quantity =  'Not modified, quantity not valid';
+            }            
         }
         if(date !== undefined){
             if(isValidDate(date.toString())){
