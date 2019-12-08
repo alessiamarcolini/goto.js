@@ -1,7 +1,6 @@
 const path = require('path');
 const User = require('../../models/user');
-const Meal = require('../../models/meal_model');
-const Food = require('../../models/food_model');
+
 
 /**
  * This middleware has the goal to 'authorize' an user, depending on the existance of its ID.
