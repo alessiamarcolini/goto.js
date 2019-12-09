@@ -1,5 +1,6 @@
 const path = require('path');
 const User = require('../../models/user');
+const Drink = require('../../models/drink_model')
 
 
 /**
@@ -49,6 +50,21 @@ async function foodAuth(req, res, next){
  */
 async function modifyValidMeal(req, res, next){
     await Meal.userAuth(req.body.id_user, req.body.id_meal)
+        .then((result) => {
+            if(result){
+                next();
+            }else{
+                permissionDenied(res);
+            }
+        }).catch((error) => {
+            console.log(error);
+            res.status(500).send("Internal error");
+            res.end();
+        });
+}
+
+async function modifyValidDrink(req, res, next){
+    await Drink.userAuth(req.body.userId, req.body.drinkId)
         .then((result) => {
             if(result){
                 next();
@@ -122,4 +138,5 @@ module.exports = {
     foodAuth: foodAuth,
     modifyValidMeal:modifyValidMeal,
     foodExists:foodExists
+    modifyValidDrink:modifyValidDrink
 };
