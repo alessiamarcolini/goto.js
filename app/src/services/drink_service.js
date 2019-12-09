@@ -21,9 +21,9 @@ async function insertDrink(userId, amount, date) {
             await drink.insertDrink(userId, amount, _date)
                 .then(async () => {
                     const RESPONS = {
-                        status: "Insertion completed! ;)",
-                        "drink_date": date,
-                        "quantity": parseInt(amount),
+                        status: "Insertion completed!",
+                        "date": date,
+                        "amount": parseInt(amount),
                     };
                     resolve(RESPONS);
                 })
@@ -55,24 +55,24 @@ async function modifyDrink(drinkId, amount, date){
             if(amount > 0){
                 await drink.modifyAmaunt(drinkId, amount)
                     .then(() => {
-                        response.drink_amount =  'Modified';
+                        response.amount =  'Modified';
                     }).catch((error) => {
                         reject(error);
                     });
             }else{
-                response.drink_amount =  'Not modified, quantity not valid';
+                response.amount =  'Not modified, quantity not valid';
             }            
         }
         if(date !== undefined){
             if(isValidDate(date.toString())){
                 await drink.modifyDate(drinkId, date)
                     .then(() => {
-                        response.drink_date = 'Modified';
+                        response.date = 'Modified';
                     }).catch((error) => {
                         reject(error);
                     });
             }else{
-                response.drink_date =  'Not modified, date not valid';
+                response.date =  'Not modified, date not valid';
             }       
         }
         if(isEmptyObject(response)){
