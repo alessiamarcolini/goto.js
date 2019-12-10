@@ -1,6 +1,6 @@
 const { Router } = require('express');
 
-const UserService = require('@app/services/users');
+const UserService = require('../services/users');
 
 const route = Router();
 
@@ -15,6 +15,9 @@ module.exports = async function(routes) {
 		* response: JSON = {
         *		"id_user": <id>,
                 "name": <name>,
+                "birth_date": <birth_date>,
+                "gender": <gender>,
+                "activity": <activity>,
                 "height": <height>,
                 "weight": <weight>,
                 "dailyCalories": <dailyCalories>}
@@ -31,11 +34,22 @@ module.exports = async function(routes) {
         })
     });
 
+    /**
+        * Route to get the daily remaining calories amount for a specific user.
+        * This get actually calls back on the services used by dailyCalories
+        * Request format:
+        * /GET : calories/remaining/:id
+        * response : JSON = {
+        *   "id_user" : <id>,
+        *   "name" : <name>,
+        *   "height" : <height>,
+        *   "weight" : <weight>,
+        *   "remainingCalories" : <remainingCalories>
+        *   "dailyCalories" : <dailyCalories>
+        *}
+    */
     route.get('/remaining/:id_user', async (req, res) => {
-
-        let date = new Date()
-        let date_formatted = date.getFullYear()  + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2);
-        await UserService.getRemainingCalories(req.params.id_user, date_formatted)
+        await UserService.getRemainingCalories(req.params.id_user)
         .then((result) => {
             res.status(200).json(result);
         })
@@ -43,9 +57,10 @@ module.exports = async function(routes) {
             res.status(400).json(error);
         })
     });
-    route.get('/remaining/:id_user/:date', async (req, res) => {
 
-        await UserService.getRemainingCalories(req.params.id_user, req.params.date)
+
+    route.get('/remaining/:id_user/', async (req, res) => {
+        await UserService.getRemainingCalories(req.params.id_user)
         .then((result) => {
             res.status(200).json(result);
         })

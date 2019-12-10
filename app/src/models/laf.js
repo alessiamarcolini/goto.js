@@ -13,11 +13,9 @@ async function getLafFactor(gender, ageType, activityLevel) {
 	return new Promise((resolve,reject) => {
 		db.any(GET_LAF_FACTOR, [gender, ageType, activityLevel])
 			.then((result) => {
-				console.log(result[0].factor);
 				resolve(result[0].factor);
 			})
 			.catch((error) => {
-				//console.log(error);
 				reject(error);
 			});
 	});

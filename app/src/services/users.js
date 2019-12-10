@@ -1,5 +1,6 @@
-const User = require('@app/models/user');
-const Laf = require('@app/models/laf');
+const User = require('../models/user');
+const Laf = require('../models/laf');
+const User_meal = require('../models/user_meal');
 
 const YEAR = new Date().getFullYear(); // current year
 
@@ -126,7 +127,7 @@ async function changeUserActivityLevel(id,activity){
 async function getDailyCalories(id_user){
 
   if (!id_user) {
-    throw Error('id_user required.');
+    throw Error('User id required.');
   }
 
   return new Promise(async (resolve, reject) => {
@@ -143,7 +144,6 @@ async function getDailyCalories(id_user){
                                   else 
                                     reject({message: 'Error: user not found.'});
                                 });
-      console.log(userInfo);
       let BMR = userInfo['weight'] * 38; // Basal Metabolic Rate
 
       let gender = 'O'
@@ -163,7 +163,6 @@ async function getDailyCalories(id_user){
       let activityLevel = 'N'
       if (userInfo['activity'] != undefined)
         activityLevel = userInfo['activity'];
-      console.log(activityLevel);
       let laf_factor = await Laf.getLafFactor(gender, ageType, activityLevel)
                                 .then((res) => {
                                   if (res)
@@ -172,15 +171,20 @@ async function getDailyCalories(id_user){
                                     reject({message: 'Error: Laf factor not found.'});
                                 })
                                 .catch((error) => {
-                                  //reject({message: 'Error with DB query.'});
                                   reject(error);
                                 })
                                 ;
 
-      console.log(laf_factor);
       let dailyCalories = BMR * laf_factor;
-      console.log(dailyCalories);
-      resolve({'id_user': userInfo.id_user, 'name': userInfo.name, 'height': userInfo.height, 'weight': userInfo.weight, 'dailyCalories' : dailyCalories});
+      resolve({
+        'id_user': userInfo.id_user, 
+        'name': userInfo.name, 
+        'gender': userInfo.gender,
+        'activity': userInfo.activity,
+        'height': userInfo.height, 
+        'weight': userInfo.weight, 
+        'dailyCalories' : dailyCalories}
+      );
                                               
     }
     catch(e){
@@ -193,26 +197,48 @@ async function getDailyCalories(id_user){
 /**
  * This service provide the amount of calories left that a user should take (today), or should have taken (the date provided).
  * @param {ID User} id_user 
- * @param {Date} date
  */
-
-async function getRemainingCalories(id_user, date){
+async function getRemainingCalories(id_user){
 
   if (!id_user) {
     throw Error('id_user required.');
-  }
-
-  if (!date){
-    date = new Date().getDate; // default is today
   }
 
   return new Promise(async (resolve, reject) => {
 
     try{
 
+      let json;
+      await getDailyCalories(id_user)
+        .then((result) =>{
+          json = result;
+        })
+        .catch((error) =>{
+          reject(error);
+        })
       
+
+
+      let calories_remain;
+      let date = new Date()
+      let date_formatted = date.getFullYear()  + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2);
+      await User_meal.getRemainingCalories(id_user,date_formatted)
+        .then((result) =>{
+          calories_remain = result;
+        })
+        .catch((error) => {
+          reject(error);
+        })
+
+
+      if(!calories_remain)
+        calories_remain = 0;
       
-                                              
+      calories_remain = json.dailyCalories - calories_remain;
+      json.remainingCalories = calories_remain;
+
+      resolve(json);
+
     }
     catch(e){
       reject(e);
