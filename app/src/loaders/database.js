@@ -13,10 +13,10 @@ const cn = {
 db = null;
 
 try{
-	db = pgp(cn)
+	db = pgp(cn);
 }catch(e){
-	console.log("errore connessione al DB")
-	throw(e)
+	console.log("errore connessione al DB");
+	throw(e);
 }
 
 module.exports = {

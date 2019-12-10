@@ -1,0 +1,713 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: "User Food API"
+  description: >-
+    This is the documentation related to the API for managing user related queries for data, meals, water and calories management in the day.
+    Project developed by team goto.js
+  license:
+    name: MIT
+    url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
+# You should put here the URL to your Heroku instance    
+host: se2-movies.herokuapp.com
+basePath: /api
+schemes:
+- http
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  /users:
+    x-summary: Users collection
+    get:
+      description: >-
+        You may request all users using this action.
+      summary: List all users
+      consumes:
+      - application/json
+      produces:
+      - application/json      
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+
+    post:
+      description: >-
+        You may modify data of a specific user using this action. It takes a JSON
+        object containing the changed properties of a user.
+      summary: Modify specific user
+      consumes:
+      - application/json
+      produces:
+      - application/json       
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserModify'
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/UserModifyResponseSuccess'
+    put:
+      description: >-
+        You may register a new user using this action. It takes a JSON
+        object containing the obligatory properties of a user.
+      summary: Register new user
+      consumes:
+      - application/json
+      produces:
+      - application/json       
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/UserResponseSuccess'
+  
+  /users/{id}:
+    x-summary: User
+    get:
+      description: >-
+        You may request informations of a specific user using this action. 
+        It takes a URL parameter as the ID property of a user.
+      summary: List data of a specific user
+      consumes:
+      - application/json
+      produces:
+      - application/json  
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+              
+  /users/{id}/stats:
+    x-summary: Stats collection
+    get:
+      description: >-
+        You may request personal statistics of a specific user using this action. 
+        It takes a URL parameter as the ID property of a user.
+      summary: List weight-related statistics of a specific user
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserStats'
+              
+  /users/{id}/stats/idealWeight:
+    x-summary: User ideal weight stats
+    get:
+      description: >-
+        You may request personal statistics about the ideal weight of a specific user using this action. 
+        It takes a URL parameter as the ID property of a user.
+      summary: Our ideal weight of a specific user
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserStatsIdeal'
+
+  /users/{id}/stats/weightPrediction:
+    x-summary: User weigt prediction in a month
+    get:
+      description: >-
+        You may request personal statistics about the possible weight a user could have in 30 days using this action. 
+        It takes a URL parameter as the ID property of a user.
+      summary: Get a specifc user weight prediction in a month
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserStatsPrediction'
+
+  /users/{id}/stats/weightTrending:
+    x-summary: User weight changes in a month
+    get:
+      description: >-
+        You may request a list of the weights of a user in the last week.
+      summary: Get user weight changes in a month.
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserStatsTrending'
+              
+  /users/{id}/stats/weightTrending/{days}:
+    x-summary: User weight changes in specific days
+    get:
+      description: >-
+        You may request a list of the weights of a user in the last week.
+      summary: Get user weight changes in specific days.
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+        - in: path
+          name: days
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserStatsTrending'
+
+  /meal:
+    x-summary: Meal
+    put:
+      description: >-
+        This endpoint allows to create a new meal references to the user.
+        It takes a JSON object containing: user id, food id, quantity, the meal date and the time.
+        In case of an invalid date the system will insert today's date.
+      summary: Insert new meal
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema: 
+            $ref: '#/definitions/NewMeal'
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/NewMealSuccessResponse'
+        400:
+          description: Bad request, invalid user data or system error
+          schema:
+            $ref: '#/definitions/MealBadRequest'
+        403:
+          description: Access Forbidden, the user id doesn't exists
+          schema:
+            type: string
+            example:
+              - Access forbidden
+    
+    post:
+      description: >-
+        This endpoint allows to modify a meal in reference to the user.
+        It takes a JSON object containing: user id, meal id, food id, quantity, the meal date and the time.
+        
+      summary: Edit a meal
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema: 
+            $ref: '#/definitions/EditMeal'
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/EditMealSuccessResponse'
+        400:
+          description: Bad request, invalid user data or system error
+          schema:
+            $ref: '#/definitions/EditMealBadRequest'
+        403:
+          description: The user id doesn't match the meal id (The meal has been created by another user)
+          schema:
+            type: string
+            example:
+              - Access forbidden
+            
+    delete:
+      description: >-
+        This endpoint deletes a meal in reference to the user.
+        It takes a JSON object containing: user id, meal id.
+        
+      summary: Delete a meal
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema: 
+            $ref: '#/definitions/DeleteMeal'
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/DeleteMealSuccessResponse'
+        400:
+          description: Bad request, invalid user data or system error
+          schema:
+            $ref: '#/definitions/DeleteMealBadRequest'
+        403:
+          description: The user id doesn't match the meal id (The meal has been created by another user)
+          schema:
+            type: string
+            example:
+              - Access forbidden
+    
+
+definitions:
+  # This is just a simple model for that defines the Primary Key
+  # We could reuse this on the rest of our models.
+  PK:
+    type: object
+    properties:
+      id_user:
+        type: number
+        description: The identifier of the user.
+        
+  # This is a base Movie model that "packs" the basic properties
+  # to avoid repeating ourselves.
+  BaseUser:
+    title: User
+    type: object
+    properties:
+      name:
+        type: string
+        description: The name of the user.
+      birth_date:
+        type: string
+        description: The birth date of the user.
+    required:
+      - name
+      - birth_date
+      
+        
+  User:
+    allOf:
+      - $ref: '#/definitions/PK'  
+      - $ref: '#/definitions/BaseUser'    
+    type: object
+    properties:
+      surname:
+        type: string
+        description: The surname of the user.
+      height:
+        type: number
+        description: The height of the user.
+      weight:
+        type: number
+        description: The weight of the user.
+      gender:
+        type: string
+        description: The gender of the user.
+      activity:
+        type: string
+        description: The exercise activity level of the user.
+    example:
+      - id_user: 7
+        name: Lucia
+        surname: Verdi
+        birth_date: 1988-02-13
+        gender: F
+        activity: B
+        weight: 65
+        height: 178
+      - id_user: 9
+        name: Marco
+        surname: null
+        birth_date: 1997-05-12
+        gender: M
+        activty: null
+        weight: 77
+        height: null
+       
+      
+  UserResponseSuccess:
+    type: object
+    properties:
+      message:
+        type: string
+        description: The server success message sent back.
+    example:
+      message: User Created succesfully.
+
+  UserResponseError:
+    type: object
+    properties:
+      message:
+        type: string
+        description: The server error message sent back.
+    example:
+      message: Error Message
+      
+  UserModify:
+    type: object
+    properties:
+      id_user:
+        type: number
+        description: The identifier of the user.
+      name:
+        type: string
+        description: The name of the user.
+      surname:
+        type: string
+        description: The surname of the user.
+      height:
+        type: number
+        description: The height of the user.
+      weight:
+        type: number
+        description: The weight of the user.
+      gender:
+        type: string
+        description: The gender of the user.
+      activity:
+        type: string
+        description: The exercise activity level of the user.
+    required:
+      - id_user
+      
+    example:
+        id_user: 7
+        name: Lucia
+        surname: Verdi
+        gender: F
+        activity: B
+        weight: 67
+        height: 179  
+
+  UserModifyResponseSuccess:
+    type: object
+    properties:
+      name:
+        type: string
+        description: The server success message sent back if name was changed.
+      surname:
+        type: string
+        description: The server success message sent back if surname was changed.
+      gender:
+        type: string
+        description: The server success message sent back if gender was changed.
+      activity:
+        type: string
+        description: The server success message sent back if activity level was changed.
+      height:
+        type: string
+        description: The server success message sent back if height was changed.
+      weight:
+        type: string
+        description: The server success message sent back if weight was changed.
+    example:
+      height: Height was modified.
+      weight: Weight was modified
+  
+  UserStats:
+    type: object
+    properties:
+      idealWeight: 
+        type: number
+        description: A real represinting your ideal weight in kg (calculated using your height and sex).
+      monthlyWeightPrediction:
+        type: number
+        description: A real representing your weight in a month time (calculated using linear regression on thw weights of your last 80 days).
+      weightTrending:
+        type: array
+        items: 
+          type: object
+          properties:
+            date:
+              type: string
+              description: The specific date of the weight registration.
+            weight:
+              type: number
+              description: The weight of that day.
+        description: An array containing object representing your weight in the last week.
+    example:
+      idealWeight: 73
+      monthlyWeightPrediction: 77
+      weightTrending: [{date: 2019-11-06, weight: 75 }, {date: 2019-12-08, weight: 76 }]
+      
+      
+  UserStatsIdeal:
+    type: object
+    properties:
+      idealWeight: 
+        type: number
+        description: A real represinting your ideal weight in kg (calculated using your height and sex).
+    example:
+      idealWeight: 73
+
+  UserStatsPrediction:
+    type: object
+    properties:
+      idealWeight: 
+        type: number
+        description: A real represinting the prediction of a user weight in a month time (calculated using linear regression).
+    example:
+      monthlyWeightPrediction: 77
+      
+  UserStatsTrending:
+    type: object
+    properties:
+      weightTrending:
+        type: array
+        items: 
+          type: object
+          properties:
+            date:
+              type: string
+              description: The specific date of the weight registration.
+            weight:
+              type: number
+              description: The weight of that day.
+        description: An array containing object representing your weight in the last week.
+    example:
+      weightTrending: [{date: 2019-11-06, weight: 75 }, {date: 2019-12-08, weight: 76 }]
+      
+     
+  PKmeal:
+    type: object
+    properties:
+      id_meal:
+        type: number
+        description: The identifier of the meal
+        
+  NewMeal:
+    allOf:
+      - $ref: '#/definitions/PKmeal'
+    type: object
+    properties:
+      id_user:
+        type: number
+        description: The identifier of the user
+      id_food:
+        type: number
+        description: The identifier of the food to add
+      quantity:
+        type: number
+        description: The quantity of ate food
+      meal_date:
+        type: string
+        description: Meal date, if invalid the system will insert today's date
+      hours:
+        type: number
+        description: The time when the user ate
+    required:
+      - id_user
+      - id_food
+      - quantity
+      - meal_date
+      - hours
+    example:
+      id_user:   2
+      id_food:   15
+      quantity:  100
+      meal_date: '2019-05-15'
+      hours:     18
+  
+  NewMealSuccessResponse:
+    type: object
+    properties: 
+      status:
+        type: string
+        description: The response status
+      meal_date:
+        type: string
+        description: The meal date
+      type_meal: 
+        type: string
+        description: The meal type
+      food_added:
+        type: number
+        description: The food added
+      quantity:
+        type: number
+        description: The food quantity
+      calories:  
+        type: number
+        description: The food calories
+      total_calories_added: 
+        type: number
+        description: The total calories added
+    example:
+      status: "Insertion completed! ;)"
+      meal_date: "2019-12-07"
+      type_meal: "Snack"
+      food_added: 13
+      quantity: 10
+      calories: 63
+      total_calories_added: 630
+      
+  MealBadRequest:
+    type: object
+    properties:
+      message:
+        type: string
+        description: Message for a bad request, may contain the invalid data inserted by the user or a system error.
+    example: 
+      please insert a valid hour
+  
+  EditMeal:
+    allOf:
+      - $ref: '#/definitions/PKmeal'
+    type: object
+    properties:
+      id_user:
+        type: number
+        description: The identifier of the user
+      id_meal:
+        type: number
+        description: The identifier of the meal to edit
+      id_food:
+        type: number
+        description: The identifier of the food to add
+      quantity:
+        type: number
+        description: The quantity of ate food
+      meal_date:
+        type: string
+        description: Meal date, if invalid the system will insert today's date
+      hours:
+        type: number
+        description: The time when the user ate
+    required:
+      - id_user
+      - id_meal
+    example:
+      - id_user:   2
+        id_meal: 13
+        id_food:   15
+        quantity:  100
+        meal_date: '2019-05-15'
+        hours:     18
+      - id_user:   2
+        id_meal: 8
+        quantity:  20
+        hours:     10
+  
+  EditMealSuccessResponse:
+    type: object
+    properties:
+      id_food: 
+        type: string
+        description: The success modified message for the food
+      quantity: 
+        type: string
+        description: If the quantity is valid the success message, else invalid message
+      meal_date:
+        type: string
+        description: If the date is valid the success message, else invalid message
+      type_meal: 
+        type: string
+        description: If the time is valid the success message, else invalid message
+    example:
+      - id_food: "Modified"
+        quantity: "Modified"
+        meal_date: "Modified"
+        type_meal: "Modified"
+      - id_food: "Modified"
+        quantity: "Modified"
+        type_meal: "Modified"
+      - id_food: "Modified"
+        quantity: "Modified"
+        type_meal: "Not Modified, hour not valid"
+      - messgae: "Nothing to modify"
+  
+  EditMealBadRequest:
+    type: string
+    description: The description of the error
+  
+  DeleteMeal:
+    allOf:
+      - $ref: '#/definitions/PKmeal'
+    type: object
+    properties:
+      id_user: 
+        type: number
+        description: The identifier of the user
+      id_meal:
+        type: number
+        description: The id of the meal to delete
+    required:
+      - id_user
+      - id_meal
+    example:
+      - id_user: 2
+      - id_meal: 4
+  
+  DeleteMealSuccessResponse:
+    type: string
+    description: The complete message
+    example:
+     - Delete completed
+  
+  DeleteMealBadRequest:
+    type: string
+    description: The description of the error
