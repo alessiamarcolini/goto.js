@@ -320,7 +320,51 @@ paths:
             type: string
             example:
               - Access forbidden
-    
+  
+  /calories/daily/{id}:
+    x-summary: Daily Calories formula
+    get:
+      description: >-
+        Get user specific user caloric needs for the day based on 
+        his/her weight, gender and activity level.
+      summary: Get user specific calculated daily calories needs.
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            $ref : '#/definitions/UserCaloriesDaily'
+              
+  /calories/remaining/{id}:
+    x-summary: Daily Calories Remaining
+    get:
+      description: >-
+        Get user specific caloric needs that remain for the day based on 
+        a sum and subtraction of eaten meals in the day.
+      summary: Get user specific remaining daily calories needs.
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            $ref : '#/definitions/UserCaloriesRemaining'
+          
 
 definitions:
   # This is just a simple model for that defines the Primary Key
@@ -711,3 +755,52 @@ definitions:
   DeleteMealBadRequest:
     type: string
     description: The description of the error
+    
+  UserCaloriesDaily:
+    allOf:
+      - $ref: '#/definitions/PK'
+    type: object
+    properties:
+      name:
+        type: string
+        description: The name of the user.
+      height:
+        type: number
+        description: The height of the user.
+      weight:
+        type: number
+        description: The weight of the user.
+      gender:
+        type: string
+        description: The gender of the user.
+      activity:
+        type: string
+        description: The exercise activity level of the user.
+      dailyCalories:
+        type: number
+        description: User specific calculated calories
+    example:
+      - id_user: 2
+        name: "Lucy"
+        gender: "F"
+        height: 160
+        weight: 55
+        activity: "B"
+        dailyCalories: 2400
+      
+  UserCaloriesRemaining:
+    allOf:
+      - $ref: '#/definitions/UserCaloriesDaily'
+    properties:
+      remainingCalories:
+        type: number
+        description: User specific remaining calories for the day.
+    example:
+      - id_user: 2
+        name: "Lucy"
+        gender: "F"
+        height: 160
+        weight: 55
+        activity: "B"
+        dailyCalories: 2400
+        remainingCalories: 1600
