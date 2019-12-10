@@ -1,7 +1,7 @@
 const path = require('path');
 const User = require('../../models/user');
-const Meal = require('../../models/meal_model');
-const Food = require('../../models/food_model');
+const Drink = require('../../models/drink_model')
+
 
 /**
  * This middleware has the goal to 'authorize' an user, depending on the existance of its ID.
@@ -63,6 +63,21 @@ async function modifyValidMeal(req, res, next){
         });
 }
 
+async function modifyValidDrink(req, res, next){
+    await Drink.userAuth(req.body.userId, req.body.drinkId)
+        .then((result) => {
+            if(result){
+                next();
+            }else{
+                permissionDenied(res);
+            }
+        }).catch((error) => {
+            console.log(error);
+            res.status(500).send("Internal error");
+            res.end();
+        });
+}
+
 /**
  * This middleware checks if a food exists.
  * @param {Request} req 
@@ -93,6 +108,15 @@ async function foodExists(req, res, next){
  * This function sends a permission denied message.
  * @param {Response} res 
  */
+function ambiguous(res){
+    res.status(300).send("Ambiguous name");
+    res.end();
+}
+
+/**
+ * This function sends a permission denied message.
+ * @param {Response} res 
+ */
 function permissionDenied(res){
     res.status(403.3).send("Access forbidden");
     res.end();
@@ -102,14 +126,17 @@ function permissionDenied(res){
  * This function sends a 'food does not exist' message.
  * @param {Response} res 
  */
+
 function foodNotExist(res){
     res.status(404).send("Food doesn't found");
     res.end();
 }
+
 
 module.exports = {
     userAuth: userAuth,
     foodAuth: foodAuth,
     modifyValidMeal:modifyValidMeal,
     foodExists:foodExists
+    modifyValidDrink:modifyValidDrink
 };

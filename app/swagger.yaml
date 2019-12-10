@@ -223,7 +223,7 @@ paths:
             items:
               $ref: '#/definitions/UserStatsTrending'
 
-  /meal:
+ /meal:
     x-summary: Meal
     put:
       description: >-
@@ -320,8 +320,105 @@ paths:
             type: string
             example:
               - Access forbidden
-  
-  /calories/daily/{id}:
+
+  /drink:
+    x-summary: Drink
+    put:
+      description: >-
+        This endpoint allows to a new drink reference to the user.
+        It takes a JSON object containing: user id, amount, the drink date.
+        In case of invalid date the system will Insert today's date
+      summary: Insert new drink
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/NewDrink'
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/NewDrinkSuccessResponse'
+        400:
+          description: Bad request, invalid user data or system error
+          schema:
+            $ref: '#/definitions/DrinkBadRequest'
+        403:
+          description: Access Forbidden, the user id doesn't exists
+          schema:
+            type: string
+            example:
+              - Access forbidden 
+
+    delete:
+      description: >-
+        This endpoint deletes a drink in reference to the user.
+        It takes a JSON object containing: user id, drink id.        
+      summary: Delete a drink
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema: 
+            $ref: '#/definitions/DeleteDrink'
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/DeleteDrinkSuccessResponse'
+        400:
+          description: Bad request, invalid user data or system error
+          schema:
+            $ref: '#/definitions/DeleteDrinkBadRequest'
+        403:
+          description: The user id doesn't match the drink id (The drink has been created by another user)
+          schema:
+            type: string
+            example:
+              - Access forbidden
+    
+    post:
+      description: >-
+        This endpoint allows to modify a drink in reference to the user.
+        It takes a JSON object containing: user id, drink id, amount, the drink date.
+        
+      summary: Edit a drink
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema: 
+            $ref: '#/definitions/EditDrink'
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/EditDrinkSuccessResponse'
+        400:
+          description: Bad request, invalid user data or system error
+          schema:
+            $ref: '#/definitions/EditDrinkBadRequest'
+        403:
+          description: The user id doesn't match the drink id (The drink has been created by another user)
+          schema:
+            type: string
+            example:
+              - Access forbidden
+
+    /calories/daily/{id}:
     x-summary: Daily Calories formula
     get:
       description: >-
@@ -364,7 +461,6 @@ paths:
           description: Successful Response
           schema:
             $ref : '#/definitions/UserCaloriesRemaining'
-          
 
 definitions:
   # This is just a simple model for that defines the Primary Key
@@ -376,7 +472,7 @@ definitions:
         type: number
         description: The identifier of the user.
         
-  # This is a base Movie model that "packs" the basic properties
+  # This is a base user model that "packs" the basic properties
   # to avoid repeating ourselves.
   BaseUser:
     title: User
@@ -755,8 +851,126 @@ definitions:
   DeleteMealBadRequest:
     type: string
     description: The description of the error
-    
-  UserCaloriesDaily:
+
+  PKdrink:
+    type: object
+    properties:
+      id_drink:
+        type: number
+        description: The identifier of the drink
+        
+  NewDrink:
+    allOf:
+      - $ref: '#/definitions/PK' 
+      - $ref: '#/definitions/PKdrink'
+    type: object
+    properties:
+      quantity:
+        type: number
+        description: The quantity of water drank by the user [ml]
+      date:
+        type: string
+        description: Drink date, if invalid the system will insert today's date
+    required:
+      - quantity
+      - date
+    example:
+      id_user:   1
+      quantity:  250
+      meal_date: '2019-12-09'
+  
+  NewDrinkSuccessResponse:
+    type: object
+    properties: 
+      status:
+        type: string
+        description: The response status
+      date:
+        type: string
+        description: The drink date
+      amount:
+        type: number
+        description: The drink quantity
+    example:
+      status: "Insertion completed!"
+      date: "2019-12-09"
+      quantity: 250
+      
+  DrinkBadRequest:
+    type: object
+    properties:
+      message:
+        type: string
+        description: Message for a bad request, may contain the invalid data inserted by the user or a system error.
+    example: 
+      please insert a valid amount
+  
+  EditDrink:
+    allOf:
+      - $ref: '#/definitions/PK' 
+      - $ref: '#/definitions/PKdrink'
+    type: object
+    properties:
+      amount:
+        type: number
+        description: The quantity of water drank by the user
+      date:
+        type: string
+        description: Drink date, if invalid the system will insert today's date
+    example:
+      - id_user: 1
+        drinkId: 7
+        amount:  500
+      - id_user: 1
+        drinkId: 7
+        date: '2019-12-09'
+  
+  EditDrinkSuccessResponse:
+    type: object
+    properties:
+      amount: 
+        type: string
+        description: If the quantity is valid the success message, else invalid message
+      date:
+        type: string
+        description: If the date is valid the success message, else invalid message
+    example:
+      - amount: "Modified"
+        date: "Modified"
+      - amount: "Modified"
+      - date: "Modified"
+      - message: "Nothing to modify"
+  
+  EditDrinkBadRequest:
+    type: string
+    description: The description of the error
+  
+  DeleteDrink:
+    allOf:
+      - $ref: '#/definitions/PK' 
+      - $ref: '#/definitions/PKdrink'
+    type: object
+    properties:
+      drinkId:
+        type: number
+        description: The id of the drink to delete
+    required:
+      - drinkId
+    example:
+      - id_user: 1
+        drinkId: 7
+  
+  DeleteDrinkSuccessResponse:
+    type: string
+    description: The complete message
+    example:
+     - Delete completed
+  
+  DeleteDrinkBadRequest:
+    type: string
+    description: The description of the error
+
+    UserCaloriesDaily:
     allOf:
       - $ref: '#/definitions/PK'
     type: object
