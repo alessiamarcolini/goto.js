@@ -970,7 +970,7 @@ definitions:
     type: string
     description: The description of the error
 
-    UserCaloriesDaily:
+  UserCaloriesDaily:
     allOf:
       - $ref: '#/definitions/PK'
     type: object
