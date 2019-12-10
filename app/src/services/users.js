@@ -190,11 +190,43 @@ async function getDailyCalories(id_user){
   });
 }
 
+/**
+ * This service provide the amount of calories left that a user should take (today), or should have taken (the date provided).
+ * @param {ID User} id_user 
+ * @param {Date} date
+ */
+
+async function getRemainingCalories(id_user, date){
+
+  if (!id_user) {
+    throw Error('id_user required.');
+  }
+
+  if (!date){
+    date = new Date().getDate; // default is today
+  }
+
+  return new Promise(async (resolve, reject) => {
+
+    try{
+
+      
+      
+                                              
+    }
+    catch(e){
+      reject(e);
+    }
+
+  });
+}
+
 module.exports = {
   createUser,
   changeUserWeight,
   changeUserHeight,
   changeUserGender,
   changeUserActivityLevel,
-  getDailyCalories
+  getDailyCalories,
+  getRemainingCalories
 };

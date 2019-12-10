@@ -1,7 +1,6 @@
 const { Router } = require('express');
 
 const UserService = require('@app/services/users');
-const user = require('../models/user')
 
 const route = Router();
 
@@ -24,6 +23,29 @@ module.exports = async function(routes) {
     route.get('/daily/:id_user', async (req, res) => {
 
         await UserService.getDailyCalories(req.params.id_user)
+        .then((result) => {
+            res.status(200).json(result);
+        })
+        .catch((error) => {
+            res.status(400).json(error);
+        })
+    });
+
+    route.get('/remaining/:id_user', async (req, res) => {
+
+        let date = new Date()
+        let date_formatted = date.getFullYear()  + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2);
+        await UserService.getRemainingCalories(req.params.id_user, date_formatted)
+        .then((result) => {
+            res.status(200).json(result);
+        })
+        .catch((error) => {
+            res.status(400).json(error);
+        })
+    });
+    route.get('/remaining/:id_user/:date', async (req, res) => {
+
+        await UserService.getRemainingCalories(req.params.id_user, req.params.date)
         .then((result) => {
             res.status(200).json(result);
         })
