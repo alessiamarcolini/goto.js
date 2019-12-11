@@ -283,13 +283,7 @@ async function getRemainingCalories(id_user){
 
 module.exports = {
   createUser,
-
-  changeUserWeight,
-  changeUserHeight,
-  changeUserGender,
-  changeUserActivityLevel,
   getDailyCalories,
   getRemainingCalories,
   modifyUser
-  
 };

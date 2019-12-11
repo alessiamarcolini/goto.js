@@ -137,6 +137,6 @@ module.exports = {
     userAuth: userAuth,
     foodAuth: foodAuth,
     modifyValidMeal:modifyValidMeal,
-    foodExists:foodExists
+    foodExists:foodExists,
     modifyValidDrink:modifyValidDrink
 };
