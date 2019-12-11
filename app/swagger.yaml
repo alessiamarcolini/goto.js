@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: '1.0'
-  title: "User Food API"
+  title: "User Food Management APIs"
   description: >-
     This is the documentation related to the API for managing user related queries for data, meals, water and calories management in the day.
     Project developed by team goto.js
@@ -70,12 +70,24 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/User'
+            $ref: '#/definitions/UserCreate'
       responses:
         200:
           description: Successful Response
           schema:
             $ref: '#/definitions/UserResponseSuccess'
+        400:
+          description: Unsuccessful Response
+          schema:
+            $ref: '#/definitions/UserResponseFailed'
+        401:
+          description: Unsuccessful Response
+          schema:
+            $ref: '#/definitions/UserResponseNoValues'
+        402:
+          description: Unsuccessful Response
+          schema:
+            $ref: '#/definitions/UserResponseWrongDate'
   
   /users/{id}:
     x-summary: User
@@ -223,7 +235,7 @@ paths:
             items:
               $ref: '#/definitions/UserStatsTrending'
 
- /meal:
+  /meal:
     x-summary: Meal
     put:
       description: >-
@@ -418,7 +430,7 @@ paths:
             example:
               - Access forbidden
 
-    /calories/daily/{id}:
+  /calories/daily/{id}:
     x-summary: Daily Calories formula
     get:
       description: >-
@@ -487,8 +499,14 @@ definitions:
     required:
       - name
       - birth_date
-      
-        
+    
+  UserCreate:
+    allOf:
+      - $ref: '#/definitions/BaseUser' 
+    example:
+      - name: "Luca"
+        birth_date: "1975-02-10"
+    
   User:
     allOf:
       - $ref: '#/definitions/PK'  
@@ -528,7 +546,33 @@ definitions:
         weight: 77
         height: null
        
+  UserResponseFailed:
+    type: object
+    properties:
+      message:
+        type: string
+        description: A server error was sent back
+    example:
+      message: User parameters required.
+  
+  UserResponseNoValues:
+    type: object
+    properties:
+      message:
+        type: string
+        description: A server error was sent back
+    example:
+      message: A name and a birth date are required to create a new user. 
       
+  UserResponseWrongDate:
+    type: object
+    properties:
+      message:
+        type: string
+        description: A server error was sent back
+    example:
+      message: Birth date was not inserted correctly.'
+    
   UserResponseSuccess:
     type: object
     properties:
