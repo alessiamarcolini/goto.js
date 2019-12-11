@@ -166,7 +166,7 @@ async function getWeightTrending(id,days=7){
         }
       }
 
-      resolve({weightTrending:trend});
+      resolve({weightTrending:trend, metadata_trendLength:trend.length});
     }
   });
 }
@@ -199,7 +199,8 @@ async function getStats(id) {
       resolve({
         idealWeight: iw['idealWeight'],
         monthlyWeightPrediction: wp['monthlyWeightPrediction'],
-        weightTrending: wt['weightTrending']
+        weightTrending: wt['weightTrending'],
+        metadata_trendLength: wt['metadata_trendLength']
       });
     }
 

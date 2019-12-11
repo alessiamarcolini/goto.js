@@ -508,43 +508,46 @@ definitions:
         birth_date: "1975-02-10"
     
   User:
-    allOf:
-      - $ref: '#/definitions/PK'  
-      - $ref: '#/definitions/BaseUser'    
     type: object
     properties:
-      surname:
-        type: string
-        description: The surname of the user.
-      height:
-        type: number
-        description: The height of the user.
-      weight:
-        type: number
-        description: The weight of the user.
-      gender:
-        type: string
-        description: The gender of the user.
-      activity:
-        type: string
-        description: The exercise activity level of the user.
+      result:
+        type: array
+        items: 
+          type: object
+          properties:
+            id_user:
+              type: number
+              description: The identifier of the user.
+            name:
+              type: string
+              description: The name of the user.
+            birth_date:
+              type: string
+              description: The birth date of the user.
+            surname:
+              type: string
+              description: The surname of the user.
+            height:
+              type: number
+              description: The height of the user.
+            weight:
+              type: number
+              description: The weight of the user.
+            gender:
+              type: string
+              description: The gender of the user.
+            activity:
+              type: string
+              description: The exercise activity level of the user.
+          required:
+            - id_user
+            - name
+            - birth_date
+      metadata_length:
+        type: integer
+        description: The metadata length of the users list
     example:
-      - id_user: 7
-        name: Lucia
-        surname: Verdi
-        birth_date: 1988-02-13
-        gender: F
-        activity: B
-        weight: 65
-        height: 178
-      - id_user: 9
-        name: Marco
-        surname: null
-        birth_date: 1997-05-12
-        gender: M
-        activty: null
-        weight: 77
-        height: null
+      {result:[id_user:7,name:'luca',birth_date:'2019-12-12',surname:'bogo'height:182,weight:76,gender:'M',actiity:'A'], metadata_length: 1}
        
   UserResponseFailed:
     type: object
@@ -673,11 +676,14 @@ definitions:
               type: number
               description: The weight of that day.
         description: An array containing object representing your weight in the last week.
+      metadata_trendLength:
+        type: integer
+        description: a metadata representing the length of the trends list
     example:
       idealWeight: 73
       monthlyWeightPrediction: 77
       weightTrending: [{date: 2019-11-06, weight: 75 }, {date: 2019-12-08, weight: 76 }]
-      
+      metadata_trendLength: 2
       
   UserStatsIdeal:
     type: object
@@ -712,9 +718,12 @@ definitions:
               type: number
               description: The weight of that day.
         description: An array containing object representing your weight in the last week.
+      metadata_trendLength:
+        type: integer
+        description: a metadata representing the length of the trends list
     example:
       weightTrending: [{date: 2019-11-06, weight: 75 }, {date: 2019-12-08, weight: 76 }]
-      
+      metadata_trendLength: 2
      
   PKmeal:
     type: object

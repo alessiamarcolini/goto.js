@@ -15,7 +15,12 @@ module.exports = async function(routes) {
 	route.get('/', async (req, res) => {
 		await user.getAll()
 		.then((result) => {
-			res.status(200).json(result);
+			myjson = {
+				result: result,
+				metadata_length: result.length
+			}
+
+			res.status(200).json(myjson);
 		})
 		.catch((error) => {
 			res.status(400).json(error);
