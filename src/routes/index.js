@@ -8,11 +8,12 @@ const stats = require('./stats');
 
 module.exports = () => {
   const routes = Router();
+
+  stats(routes);
   users(routes);
   drinks(routes);
   calories(routes);
   meals(routes);
-  stats(routes);
 
   return routes;
 };

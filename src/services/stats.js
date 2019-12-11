@@ -197,7 +197,7 @@ async function getStats(id) {
 
     if (iw && wp && wt){
       resolve({
-        iw: iw['idealWeight'],
+        idealWeight: iw['idealWeight'],
         monthlyWeightPrediction: wp['monthlyWeightPrediction'],
         weightTrending: wt['weightTrending']
       });

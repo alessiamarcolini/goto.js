@@ -15,10 +15,6 @@ function errMessage(err){
 module.exports = async function(routes) {
 	routes.use('/users', route);
 
-
-	//middleware to check if a user exists (implementato da moreno)
-	routes.use('/:id_user', auth.userAuth);
-
 	/* returns every stats
 	* 	{
     *    	idealWeight: <real>,
