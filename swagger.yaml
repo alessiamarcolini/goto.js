@@ -265,9 +265,23 @@ paths:
         403:
           description: Access Forbidden, the user id doesn't exists
           schema:
-            type: string
+            type: object
+            properties:
+              message:
+                type: string
+                description: Access forbidden
             example:
-              - Access forbidden
+              message: Access forbidden
+        500:
+          description: Internal error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Internal error
+            example:
+              message: Internal error 
     
     post:
       description: >-
@@ -295,11 +309,25 @@ paths:
           schema:
             $ref: '#/definitions/EditMealBadRequest'
         403:
-          description: The user id doesn't match the meal id (The meal has been created by another user)
+          description: Access Forbidden, the user id doesn't exists
           schema:
-            type: string
+            type: object
+            properties:
+              message:
+                type: string
+                description: Access forbidden
             example:
-              - Access forbidden
+              message: Access forbidden
+        500:
+          description: Internal error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Internal error
+            example:
+              message: Internal error 
             
     delete:
       description: >-
@@ -327,11 +355,25 @@ paths:
           schema:
             $ref: '#/definitions/DeleteMealBadRequest'
         403:
-          description: The user id doesn't match the meal id (The meal has been created by another user)
+          description: Access Forbidden, the user id doesn't exists
           schema:
-            type: string
+            type: object
+            properties:
+              message:
+                type: string
+                description: Access forbidden
             example:
-              - Access forbidden
+              message: Access forbidden
+        500:
+          description: Internal error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Internal error
+            example:
+              message: Internal error 
 
   /drink:
     x-summary: Drink
@@ -802,10 +844,10 @@ definitions:
     type: object
     properties:
       message:
-        type: string
+        type: object
         description: Message for a bad request, may contain the invalid data inserted by the user or a system error.
     example: 
-      please insert a valid hour
+      message: please insert a valid hour
   
   EditMeal:
     allOf:
@@ -896,10 +938,13 @@ definitions:
       - id_meal: 4
   
   DeleteMealSuccessResponse:
-    type: string
-    description: The complete message
+    type: object
+    properties:
+      message:
+        type: string
+        description: The complete message
     example:
-     - Delete completed
+      message: Delete completed
   
   DeleteMealBadRequest:
     type: string
@@ -956,7 +1001,7 @@ definitions:
         type: string
         description: Message for a bad request, may contain the invalid data inserted by the user or a system error.
     example: 
-      please insert a valid amount
+      - please insert a valid amount
   
   EditDrink:
     allOf:

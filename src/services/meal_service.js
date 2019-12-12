@@ -51,10 +51,10 @@ async function insert(userId, foodId, amount, req_date, hours){
                         reject(error);
                     });
             }else{
-                reject("Please insert a valid hour");
+                reject({message: "Please insert a valid hour"});
             }            
         }else{
-            reject("Please insert a valid quantity");
+            reject({message: "Please insert a valid quantity"});
         }
     });
 }

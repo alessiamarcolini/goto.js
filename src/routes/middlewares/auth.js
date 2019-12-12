@@ -1,6 +1,8 @@
 const path = require('path');
 const User = require('../../models/user');
-const Drink = require('../../models/drink_model')
+const Drink = require('../../models/drink_model');
+const Meal = require('../../models/meal_model');
+const Food = require('../../models/food_model');
 
 
 /**
@@ -15,7 +17,7 @@ async function userAuth(req, res, next){
             result.length !== 0 ? next() : permissionDenied(res);
         }).catch((error) => {
             console.log(error);
-            res.status(500).send("Internal error");
+            res.status(500).send({message: "Internal error"});
             res.end();
         });   
 }
@@ -37,7 +39,7 @@ async function foodAuth(req, res, next){
             }
         }).catch((error) => {
             console.log(error);
-            res.status(500).send("Internal error");
+            res.status(500).send({message: "Internal error"});
             res.end();
         });
 }
@@ -58,7 +60,7 @@ async function modifyValidMeal(req, res, next){
             }
         }).catch((error) => {
             console.log(error);
-            res.status(500).send("Internal error");
+            res.status(500).send({message: "Internal error"});
             res.end();
         });
 }
@@ -96,7 +98,7 @@ async function foodExists(req, res, next){
                 }
             }).catch((error) => {
                 console.log(error);
-                res.status(500).send("Internal error");
+                res.status(500).send({message: "Internal error"});
                 res.end();
             });
     }else{
@@ -118,7 +120,7 @@ function ambiguous(res){
  * @param {Response} res 
  */
 function permissionDenied(res){
-    res.status(403.3).send("Access forbidden");
+    res.status(403.3).send({message: "Access forbidden"});
     res.end();
 }
 
@@ -128,7 +130,7 @@ function permissionDenied(res){
  */
 
 function foodNotExist(res){
-    res.status(404).send("Food doesn't found");
+    res.status(404).send({message: "Food doesn't found"});
     res.end();
 }
 
