@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: '1.0'
+  version: '1.1'
   title: "User Food Management APIs"
   description: >-
     This is the documentation related to the API for managing user related queries for data, meals, water and calories management in the day.
@@ -9,7 +9,7 @@ info:
     name: MIT
     url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
 # You should put here the URL to your Heroku instance    
-host: afternoon-cove-59778.herokuapp.com
+host: swe2-goto-js.herokuapp.com
 basePath: /api/v1
 schemes:
 - http
