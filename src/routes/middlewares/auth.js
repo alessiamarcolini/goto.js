@@ -130,7 +130,7 @@ function permissionDenied(res){
  */
 
 function foodNotExist(res){
-    res.status(404).send({message: "Food doesn't found"});
+    res.status(404).send({message: "Food not found"});
     res.end();
 }
 

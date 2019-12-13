@@ -46,7 +46,7 @@ module.exports = async function(routes) {
     route.delete("/", auth.modifyValidMeal ,async(req, res) => {
         await service.deleteMeal(req.body.id_meal)
             .then(() => {
-                res.status(200).send({message: "Delete complited"});
+                res.status(200).send({message: "Delete completed"});
                 res.end();
             }).catch((error) => {
                 res.status(400).send(error);
