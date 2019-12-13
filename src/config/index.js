@@ -19,7 +19,7 @@ module.exports = {
    * API configs
    */
   api: {
-    prefix: '/api'
+    prefix: '/api/v1'
   },
 
   /**

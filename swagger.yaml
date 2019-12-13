@@ -10,7 +10,7 @@ info:
     url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
 # You should put here the URL to your Heroku instance    
 host: se2-movies.herokuapp.com
-basePath: /api
+basePath: /api/v1
 schemes:
 - http
 consumes:
