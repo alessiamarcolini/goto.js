@@ -8,6 +8,6 @@
 * Nicolò Gottardello [@GottaSr](https://github.com/GottaSr)
 * Thomas Reolon [@Thomas R.](https://github.com/thomasreolon)
 
-## [Product Backlog](https://docs.google.com/spreadsheets/d/17xzDquA9nDayLfl4RP1fDZpg5R2UCJQdaMWprYT_H8I/edit?usp=sharing)
-In the first sheet you can find the unordered product backlog.
-In the second one you can find the product backlog ordered by development priority.
+## Project Details
+
+For major details on the project production go to the Wiki Page linked here: [gotojs Wiki Page](https://github.com/alessiamarcolini/goto.js/wiki)

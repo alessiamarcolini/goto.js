@@ -1,47 +1,213 @@
 const pgp = require('pg-promise')();
-const config = require('@app/config');
+const {db} = require('@app/loaders/database');
 
+const CREATE_USER  = 'INSERT INTO _user(name, birth_date) VALUES($1, $2) RETURNING id_user;';
+const INSERT_USER = 'INSERT INTO user_history(change_date,id_user) VALUES(now(),$1);';
+const ALL_USER = 'SELECT * FROM _user ORDER BY id_user;';
+const SELECT_USER = 'SELECT * FROM _user WHERE id_user = $1';
+const CHANGE_HEIGHT = 'UPDATE _user SET height = $1 WHERE id_user = $2';
+const CHANGE_WEIGHT = 'UPDATE _user SET weight = $1 WHERE id_user = $2';
+const CHANGE_GENDER = 'UPDATE _user SET gender = $1 WHERE id_user = $2';
+const CHANGE_ACTIVITY = 'UPDATE _user SET activity = $1 WHERE id_user = $2';
+const CHANGE_NAME = 'UPDATE _user SET name = $1 WHERE id_user = $2';
+const CHANGE_SURNAME = 'UPDATE _user SET surname = $1 WHERE id_user = $2';
+const GET_USER = 'SELECT * FROM _user WHERE id_user = $1';
 
-const cn = {
-	host: config.db_host,
-	port: config.db_port,
-	database: config.db_name,
-	user: config.db_user,
-	password : config.db_password    
-};
-
-const db = pgp(cn);
-
-
-
-
-
-
-async function create(user) {
-	try {
-		await db.none('INSERT INTO users(name, password) VALUES($1, $2)', [user.name, user.password]);
-	}catch(e) {
-		console.log(e)
-		throw Error(e)
-	}
+/**
+ * Models function to execute insert query into the DB.
+ * Creates new User.
+ * @param {Name} name 
+ * @param {Birth Date} birth_date 
+*/
+async function createUser(name,birth_date) {
+	return new Promise((resolve,reject) => {
+		db.oneOrNone(CREATE_USER, [name, birth_date])
+			.then((result) => {
+				return db.none(INSERT_USER,[result.id_user]);
+			}).then((result) => {
+							resolve(result);
+						})
+			.catch((error) => {
+				reject(error);
+			})
+	})
 }
 
-
-
-
-
-// eslint-disable-next-line no-unused-vars
+/**
+ * Models function to execute select query into the DB.
+ * Retrieves all Users on table _user
+ * @param {User ID} userId 
+ * @param {Food ID} foodId 
+ * @param {Quantity} amount 
+ * @param {Date} date 
+ * @param {Type} type 
+*/
 async function getAll() {
-	try {
-	    const users = await db.any('SELECT * FROM users', []);
-	    return users;
-	} 
-	catch(e) {
-		throw Error(e)
-	}
+	return new Promise((resolve, reject) => {
+		db.any(ALL_USER)
+			.then((result) => {
+				resolve(result);
+			})
+			.catch((error) => {
+				reject(error);
+			});
+	});
 }
+
+/**
+ * Models function to execute select query into the DB.
+ * Retrieves single User given :id on table _user
+ * @param {ID User} id 
+*/
+async function getUser(id) {
+	return new Promise((resolve,reject) => {
+		db.any(SELECT_USER,id)
+			.then((result) => {
+				if (result.length != 1){
+			      reject({message:'get user by ID returned a number of row != 1'})
+			    }
+			    resolve(result);
+			})
+			.catch((error) => {
+				reject(error);
+			});
+	});
+}
+
+/**
+ * Models function to execute update query into the DB.
+ * Modifies weight of specific user.
+ * @param {ID User} id 
+ * @param {Weight} weight
+*/
+async function changeUserWeight(id,weight) {
+	return new Promise((resolve,reject) => {
+		db.any(CHANGE_WEIGHT,[weight,id])
+			.then((result) => {
+				resolve(result);
+			})
+			.catch((error) => {
+				reject(error);
+			});
+	});
+}
+
+/**
+ * This function checks if a user exists.
+ * @param {User ID} userId 
+ */
+async function authUser(userId){
+	return new Promise(async (resolve, reject) => {
+		await db.any(GET_USER, [userId])
+			.then((result) => {
+				resolve(result);
+			}).catch((error) => {
+				reject(error);
+			});
+	});
+}
+
+/**
+ * Models function to execute update query into the DB.
+ * Modifies height of specific user.
+ * @param {ID User} id 
+ * @param {Height} Height
+*/
+async function changeUserHeight(id,height) {
+	return new Promise((resolve,reject) => {
+		db.any(CHANGE_HEIGHT,[height,id])
+			.then((result) => {
+				resolve(result);
+			})
+			.catch((error) => {
+				reject(error);
+			});
+	});
+}
+
+/**
+ * Models function to execute update query into the DB.
+ * Modifies gender of specific user.
+ * @param {ID User} id 
+ * @param {Gender} gender
+*/
+async function changeUserGender(id,gender) {
+	return new Promise((resolve,reject) => {
+		db.any(CHANGE_GENDER,[gender,id])
+			.then((result) => {
+				resolve(result);
+			})
+			.catch((error) => {
+				reject(error);
+			});
+	});
+}
+
+/**
+ * Models function to execute update query into the DB.
+ * Modifies activity of specific user.
+ * @param {ID User} id 
+ * @param {Activity Level} activity
+*/
+async function changeUserActivityLevel(id,level) {
+	return new Promise((resolve,reject) => {
+		db.any(CHANGE_ACTIVITY,[level,id])
+			.then((result) => {
+				resolve(result);
+			})
+			.catch((error) => {
+				reject(error);
+			});
+	});
+}
+
+/**
+ * Models function to execute update query into the DB.
+ * Modifies name of specific user.
+ * @param {ID User} id 
+ * @param {Name} name
+*/
+async function changeUsername(id,name) {
+	return new Promise((resolve,reject) => {
+		db.any(CHANGE_NAME,[name,id])
+			.then((result) => {
+				resolve(result);
+			})
+			.catch((error) => {
+				reject(error);
+			});
+	});
+}
+
+/**
+ * Models function to execute update query into the DB.
+ * Modifies surname of specific user.
+ * @param {ID User} id 
+ * @param {Surname} surname
+*/
+async function changeUsersurname(id,surname) {
+	return new Promise((resolve,reject) => {
+		db.any(CHANGE_SURNAME,[surname,id])
+			.then((result) => {
+				resolve(result);
+			})
+			.catch((error) => {
+				reject(error);
+			});
+	});
+}
+
 
 module.exports = {
-  create,
-  getAll
+  createUser,
+  getAll,
+  getUser,
+  changeUserWeight,
+  changeUserHeight,
+  changeUserGender,
+  changeUserActivityLevel,
+  changeUsername,
+  changeUsersurname,
+  getAll,
+  authUser: authUser
 };

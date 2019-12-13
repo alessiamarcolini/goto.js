@@ -1,42 +1,96 @@
 const { Router } = require('express');
-
-const UserService = require('@app/services/users');
-
+const auth = require('./middlewares/auth');
+const service = require('../services/users');
 const route = Router();
+const user = require('../models/user');
 
 module.exports = async function(routes) {
 	routes.use('/users', route);
 
-
-	
-	// ritorna la lista di tutti gli utanti
-	// esempio: [{"user_id":1,"name":"luca","password":"123123"}]
+	/**
+		* Route to retrieve data of all users
+		* Request format:
+		* /PUT : users/
+	*/
 	route.get('/', async (req, res) => {
-		const users = await UserService.getAll();
-		res.status(200).json(users);
+		await user.getAll()
+		.then((result) => {
+			myjson = {
+				result: result,
+				metadata_length: result.length
+			}
+
+			res.status(200).json(myjson);
+		})
+		.catch((error) => {
+			res.status(400).json(error);
+		})
 	});
 
+		/**
+		* Route to retrieve data of a specific user
+		* Request format:
+		* /PUT : users/:id
+		* @param {User ID} id
+	*/
+	route.get('/:id', async (req,res) => {
+		await user.getUser(req.params.id)
+		.then((result) => {
+			res.status(200).json(result);
+		})
+		.catch((error) => {
+			res.status(400).json(error);
+		})
+	});
 
-/*
-il codice viene un po' brutto con i try catch....
-forse è meglio usare .then .catch
-
-*/
-
-	// aggiunge un utente
-	route.post('/', async (req, res) => {
-		try{
-			await UserService.create(req.body)
-			res.status(200).json({
-				message:'ok'
+	/**
+		* Route to update a specific user data
+		* Request format:
+		* /POST : users/
+    * JSON = {
+		*		"id_user" 		: <id>,
+		*		"name" 			: <text>,
+		*		"surname" 	: <text>,
+		*		"gender" 		: <char>,
+		*		"activity"  : <char>,
+		*		"weight"   	: <number>,
+		*		"height"		: <number>
+		* }
+	*/
+	route.post('/',auth.userAuth, async (req,res) => {
+		await service.modifyUser(req.body.id_user,req.body.name,req.body.surname,req.body.gender,req.body.activity,req.body.weight,req.body.height)
+		.then((result) => {
+			res.status(200).send(result);
+			res.end();
+			})
+		.catch((error) => {
+			res.status(400).send(error);
+			res.end();
 			});
-		}catch (err){
-			res.status(err.status || 500);
-		    res.json({
-		      errors: {
-		        message: err.message
-		      }
-		    });
-		}
+	});
+
+	/**
+		* Route to create a new user in the system.
+		* Request format:
+		* /PUT : users/
+		* JSON = {
+		*		"name" : <name>,
+		*		"birth_date" : <date yyyy-MM-dd>
+		* }
+  */
+	route.put('/', async (req, res) => {
+		await service.createUser(req.body)
+		.then((result) => {
+			res.status(200).json({
+				message:'User Created succesfully.'
+			});
+		})
+		.catch((error) => {
+			res.status(400).json({
+				errors: {
+					message : error.message
+				}
+			});
+		})
 	});
 };

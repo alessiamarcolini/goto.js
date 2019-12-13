@@ -3,8 +3,8 @@
  * a fully-configured instance of our application.
  */
 const express = require('express');
-
 const loaders = require('./loaders');
+
 
 module.exports = async function() {
   const app = express();

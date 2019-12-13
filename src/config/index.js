@@ -7,7 +7,7 @@ const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
 
 const result = dotenv.config({ path: path.resolve(process.cwd(), envFile) });
 
-if (result.error) {
+if (process.env.NODE_ENV !== 'production' && result.error) {
   // This error should crash whole process
   throw result.error;
 }
@@ -36,7 +36,7 @@ module.exports = {
 
   db_port: process.env.DB_PORT,
 
-  db_name: process.env.DB_PORT,
+  db_name: process.env.DB_NAME,
 
   db_user: process.env.DB_USER,
 
