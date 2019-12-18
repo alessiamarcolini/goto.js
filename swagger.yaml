@@ -935,7 +935,7 @@ definitions:
       - id_meal
     example:
       - id_user: 2
-      - id_meal: 4
+        id_meal: 4
   
   DeleteMealSuccessResponse:
     type: object
@@ -953,16 +953,18 @@ definitions:
   PKdrink:
     type: object
     properties:
-      id_drink:
+      drinkId:
         type: number
         description: The identifier of the drink
         
   NewDrink:
     allOf:
-      - $ref: '#/definitions/PK' 
       - $ref: '#/definitions/PKdrink'
     type: object
     properties:
+      userId:
+        type: number
+        description: The identifier of the user
       quantity:
         type: number
         description: The quantity of water drank by the user [ml]
@@ -970,12 +972,13 @@ definitions:
         type: string
         description: Drink date, if invalid the system will insert today's date
     required:
+      - userId
       - quantity
       - date
     example:
-      id_user:   1
-      quantity:  250
-      meal_date: '2019-12-09'
+      userId:   1
+      amount:  250
+      date: '2019-12-09'
   
   NewDrinkSuccessResponse:
     type: object
@@ -992,7 +995,7 @@ definitions:
     example:
       status: "Insertion completed!"
       date: "2019-12-09"
-      quantity: 250
+      amount: 250
       
   DrinkBadRequest:
     type: object
@@ -1016,10 +1019,10 @@ definitions:
         type: string
         description: Drink date, if invalid the system will insert today's date
     example:
-      - id_user: 1
+      - userId: 1
         drinkId: 7
         amount:  500
-      - id_user: 1
+      - userId: 1
         drinkId: 7
         date: '2019-12-09'
   
@@ -1055,7 +1058,7 @@ definitions:
     required:
       - drinkId
     example:
-      - id_user: 1
+      - uderId: 1
         drinkId: 7
   
   DeleteDrinkSuccessResponse:
