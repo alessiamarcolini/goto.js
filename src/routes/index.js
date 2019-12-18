@@ -10,9 +10,9 @@ module.exports = () => {
   const routes = Router();
 
   stats(routes);
+  calories(routes);
   users(routes);
   drinks(routes);
-  calories(routes);
   meals(routes);
 
   return routes;
